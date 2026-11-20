@@ -679,14 +679,15 @@
       showFinanceIndices: true,
       financeMarqueeExtra: false,
       financeCurrencies: ['CAD', 'JPY'],
+      transitDisplayMode: 'minutes', // 'minutes' | 'countdown'
       githubToken: '',
       githubGistId: '',
       lastCloudSyncTime: '',
       widgets: JSON.parse(JSON.stringify(DEFAULT_WIDGETS)),
       transitItems: [
-        { id: 't1', type: 'mtr', line: 'TCL', lineName: '東涌線', color: '#f3982d', sta: 'NAC', staName: '南昌站', dir: 'DT', dest: '往香港', walkMin: 5, etaMin: 4, status: '準備出門' },
-        { id: 't2', type: 'mtr', line: 'TWL', lineName: '荃灣線', color: '#e60012', sta: 'SSP', staName: '深水埗站', dir: 'UT', dest: '往荃灣', walkMin: 6, etaMin: 2, status: '剛開出' },
-        { id: 't3', type: 'bus', line: '701', lineName: '城巴 701', color: '#eab308', sta: '富昌邨', staName: '富昌邨', dir: 'I', dest: '往旺角', walkMin: 4, etaMin: 7, status: '步行 4 分' }
+        { id: 't1', type: 'mtr', line: 'TCL', lineName: '東涌線', color: '#f3982d', sta: 'NAC', staName: '南昌站', dir: 'DT', dest: '往香港', walkMin: 5, etaMin: 7, upcomingMins: [4, 7, 12], status: '準備出門' },
+        { id: 't2', type: 'mtr', line: 'TWL', lineName: '荃灣線', color: '#e60012', sta: 'SSP', staName: '深水埗站', dir: 'UT', dest: '往荃灣', walkMin: 6, etaMin: 8, upcomingMins: [2, 8, 14], status: '準備出門' },
+        { id: 't3', type: 'bus', line: '701', lineName: '城巴 701', color: '#eab308', sta: '富昌邨', staName: '富昌邨', dir: 'I', dest: '往旺角', walkMin: 4, etaMin: 7, upcomingMins: [7, 19], status: '準備出門' }
       ],
       todos: [
         { id: 'td1', text: '檢查屋企物資', done: false, severity: '⚠️', due: '今日', dueType: 'today', owner: 'Miranda' },
@@ -758,6 +759,15 @@
       GBP: { code: 'GBP', label: '英鎊 GBP/HKD', flag: '🇬🇧', rate: '9.86' },
       EUR: { code: 'EUR', label: '歐元 EUR/HKD', flag: '🇪🇺', rate: '8.22' },
       AUD: { code: 'AUD', label: '澳元 AUD/HKD', flag: '🇦🇺', rate: '5.08' }
+    };
+
+    const MTR_LINE_PRESETS = {
+      TCL: { name: '東涌線', color: '#f3982d', stations: [{ code: 'HOK', name: '香港站' }, { code: 'KOW', name: '九龍站' }, { code: 'OLY', name: '奧運站' }, { code: 'NAC', name: '南昌站' }, { code: 'LAK', name: '荔景站' }, { code: 'TSY', name: '青衣站' }, { code: 'SUN', name: '欣澳站' }, { code: 'TUC', name: '東涌站' }], dirs: [{ code: 'DT', label: '往香港' }, { code: 'UT', label: '往東涌' }] },
+      TWL: { name: '荃灣線', color: '#e60012', stations: [{ code: 'CEN', name: '中環站' }, { code: 'ADM', name: '金鐘站' }, { code: 'TST', name: '尖沙咀站' }, { code: 'JOR', name: '佐敦站' }, { code: 'YMT', name: '油麻地站' }, { code: 'MOK', name: '旺角站' }, { code: 'PRE', name: '太子站' }, { code: 'SSP', name: '深水埗站' }, { code: 'CSW', name: '長沙灣站' }, { code: 'LCK', name: '荔枝角站' }, { code: 'MEF', name: '美孚站' }, { code: 'TSW', name: '荃灣站' }], dirs: [{ code: 'UT', label: '往荃灣' }, { code: 'DT', label: '往中環' }] },
+      KTL: { name: '觀塘線', color: '#00ab4e', stations: [{ code: 'WHA', name: '黃埔站' }, { code: 'HOM', name: '何文田站' }, { code: 'YMT', name: '油麻地站' }, { code: 'MOK', name: '旺角站' }, { code: 'PRE', name: '太子站' }, { code: 'SKM', name: '石硤尾站' }, { code: 'KOT', name: '九龍塘站' }, { code: 'DIH', name: '鑽石山站' }, { code: 'KWT', name: '觀塘站' }, { code: 'TIK', name: '調景嶺站' }], dirs: [{ code: 'UT', label: '往調景嶺' }, { code: 'DT', label: '往黃埔' }] },
+      TML: { name: '屯馬線', color: '#9a3820', stations: [{ code: 'WKS', name: '烏溪沙站' }, { code: 'STW', name: '沙田圍站' }, { code: 'TAW', name: '大圍站' }, { code: 'DIH', name: '鑽石山站' }, { code: 'KAT', name: '啟德站' }, { code: 'HUH', name: '紅磡站' }, { code: 'ETS', name: '尖東站' }, { code: 'AUS', name: '柯士甸站' }, { code: 'NAC', name: '南昌站' }, { code: 'MEF', name: '美孚站' }, { code: 'TUM', name: '屯門站' }], dirs: [{ code: 'DT', label: '往屯門' }, { code: 'UT', label: '往烏溪沙' }] },
+      EAL: { name: '東鐵線', color: '#5eb6e4', stations: [{ code: 'ADM', name: '金鐘站' }, { code: 'EXC', name: '會展站' }, { code: 'HUH', name: '紅磡站' }, { code: 'MKK', name: '旺角東站' }, { code: 'KOT', name: '九龍塘站' }, { code: 'TAW', name: '大圍站' }, { code: 'SHT', name: '沙田站' }, { code: 'TAP', name: '大埔墟站' }, { code: 'FAN', name: '粉嶺站' }, { code: 'SHS', name: '上水站' }], dirs: [{ code: 'UT', label: '往羅湖/落馬洲' }, { code: 'DT', label: '往金鐘' }] },
+      ISL: { name: '港島線', color: '#0075c2', stations: [{ code: 'KET', name: '堅尼地城站' }, { code: 'SHW', name: '上環站' }, { code: 'CEN', name: '中環站' }, { code: 'ADM', name: '金鐘站' }, { code: 'WAC', name: '灣仔站' }, { code: 'CAB', name: '銅鑼灣站' }, { code: 'TAK', name: '太古站' }, { code: 'CHW', name: '柴灣站' }], dirs: [{ code: 'UT', label: '往柴灣' }, { code: 'DT', label: '往堅尼地城' }] }
     };
 
     let state = loadState();
@@ -1391,27 +1401,53 @@
       }
 
       if (w.id === 'transit') {
+        const mode = state.transitDisplayMode || 'minutes';
         return `
           <div class="flex flex-col h-full gap-1.5">
             <div class="flex items-center justify-between gap-1 shrink-0">
               ${showTitle ? `<span class="fs-sm font-black flex items-center gap-1.5"><i class="fa-solid fa-train-subway text-indigo-400"></i> 實時交通到站</span>` : `<span></span>`}
-              <button onclick="refreshTransitLive(true)" class="w-6 h-6 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[11px] hover:rotate-180 transition duration-500">
+              <button onclick="refreshTransitLive(true)" class="w-6 h-6 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[11px] hover:rotate-180 transition duration-500" title="刷新班次">
                 <i class="fa-solid fa-rotate"></i>
               </button>
             </div>
             <div class="card-inner-scroll space-y-1.5">
               ${state.transitItems.map(item => {
-                const badgeColor = item.etaMin <= 3 ? 'bg-rose-500 text-white' : (item.etaMin <= 8 ? 'bg-emerald-500 text-white' : 'bg-emerald-500/85 text-white');
+                const walk = Math.max(0, Number(item.walkMin) || 0);
+                const list = Array.isArray(item.upcomingMins) && item.upcomingMins.length
+                  ? item.upcomingMins
+                  : [Number(item.etaMin) || 5];
+                // Pick the earliest train/bus that arrives >= walkMin (catchable after walking)
+                const catchable = list.find(m => m >= walk);
+                const targetTrainMin = catchable !== undefined ? catchable : list[list.length - 1];
+                const leaveInMin = Math.max(0, targetTrainMin - walk);
+
+                let rightBadgeText = `${targetTrainMin} 分`;
+                let subStatusText = `步行 ${walk} 分 · 趕得及班次`;
+                let badgeColor = 'bg-emerald-500 text-white';
+
+                if (mode === 'countdown') {
+                  if (leaveInMin === 0) {
+                    rightBadgeText = '即刻出門';
+                    badgeColor = 'bg-rose-500 text-white animate-pulse';
+                  } else {
+                    rightBadgeText = `${leaveInMin} 分後出門`;
+                    badgeColor = leaveInMin <= 3 ? 'bg-amber-500 text-slate-950' : 'bg-indigo-600 text-white';
+                  }
+                  subStatusText = `步行 ${walk} 分 · 該班 ${targetTrainMin} 分到站`;
+                } else {
+                  badgeColor = leaveInMin <= 2 ? 'bg-amber-500 text-slate-950' : 'bg-emerald-500 text-white';
+                }
+
                 return `
                   <div class="px-2.5 py-1.5 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex items-center justify-between gap-2">
                     <div class="min-w-0">
                       <div class="flex items-center gap-1.5">
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-black text-white shrink-0" style="background:${escapeHtml(item.color)}">${escapeHtml(item.lineName)}</span>
-                        <span class="fs-2xs font-bold opacity-75 truncate">${escapeHtml(item.status)}</span>
+                        <span class="fs-2xs font-bold opacity-75 truncate">${escapeHtml(subStatusText)}</span>
                       </div>
                       <div class="fs-xs font-black truncate mt-0.5">${escapeHtml(item.staName)} · ${escapeHtml(item.dest)}</div>
                     </div>
-                    <span class="px-2.5 py-1 rounded-full ${badgeColor} fs-xs font-black shrink-0 tabular-nums">${item.etaMin} 分</span>
+                    <span class="px-2.5 py-1 rounded-full ${badgeColor} fs-xs font-black shrink-0 tabular-nums">${rightBadgeText}</span>
                   </div>
                 `;
               }).join('')}
@@ -1995,6 +2031,75 @@
             </label>
           </div>
         `;
+      } else if (id === 'transit') {
+        const defaultLine = 'TCL';
+        const linePreset = MTR_LINE_PRESETS[defaultLine];
+        extraHtml = `
+          <div class="p-3 rounded-2xl bg-black/5 dark:bg-white/5 space-y-2.5">
+            <div class="font-black">時間顯示方式</div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="setTransitDisplayMode('minutes')" class="py-2 rounded-xl font-black text-xs ${(state.transitDisplayMode || 'minutes') === 'minutes' ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-zinc-800'}">顯示班次分鐘 (如 7 分)</button>
+              <button onclick="setTransitDisplayMode('countdown')" class="py-2 rounded-xl font-black text-xs ${state.transitDisplayMode === 'countdown' ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-zinc-800'}">出門倒數 (扣減步行時間)</button>
+            </div>
+
+            <div class="font-black pt-1">現有路線（可獨立修改步行分鐘）</div>
+            <div class="space-y-1.5">
+              ${state.transitItems.map(item => `
+                <div class="p-2 rounded-xl bg-white/80 dark:bg-zinc-800/90 flex items-center justify-between gap-2">
+                  <div class="min-w-0">
+                    <div class="font-black text-xs flex items-center gap-1.5">
+                      <span class="px-1.5 py-0.5 rounded text-[10px] text-white" style="background:${escapeHtml(item.color)}">${escapeHtml(item.lineName)}</span>
+                      <span class="truncate">${escapeHtml(item.staName)} · ${escapeHtml(item.dest)}</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-[10px] opacity-70 font-bold">步行</span>
+                    <input type="number" min="0" max="45" value="${item.walkMin || 0}" onchange="updateTransitWalkMin('${item.id}', this.value)" class="w-12 px-1.5 py-1 rounded-lg bg-black/10 dark:bg-white/10 text-center font-black text-xs" />
+                    <span class="text-[10px] opacity-70 font-bold">分</span>
+                    <button onclick="removeTransitItem('${item.id}')" class="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-500 font-black text-xs">✕</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="border-t border-black/10 dark:border-white/10 pt-2.5 space-y-2">
+              <div class="font-black">+ 新增港鐵 (MTR) 或巴士路線</div>
+              <div class="grid grid-cols-2 gap-1.5">
+                <select id="newTransitType" onchange="onNewTransitTypeChange()" class="px-2.5 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs">
+                  <option value="mtr">港鐵 MTR</option>
+                  <option value="bus">九巴 / 城巴</option>
+                </select>
+                <div class="flex items-center gap-1 bg-white dark:bg-zinc-800 px-2.5 py-1.5 rounded-xl">
+                  <span class="text-[11px] font-bold opacity-70 shrink-0">步行</span>
+                  <input id="newTransitWalk" type="number" min="0" max="45" value="5" class="w-full bg-transparent text-center font-black text-xs focus:outline-none" />
+                  <span class="text-[11px] font-bold opacity-70 shrink-0">分鐘</span>
+                </div>
+              </div>
+
+              <!-- MTR Selector Fields -->
+              <div id="newMtrFields" class="grid grid-cols-3 gap-1.5">
+                <select id="newMtrLine" onchange="onNewMtrLineChange()" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs">
+                  ${Object.keys(MTR_LINE_PRESETS).map(k => `<option value="${k}">${MTR_LINE_PRESETS[k].name}</option>`).join('')}
+                </select>
+                <select id="newMtrSta" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs">
+                  ${linePreset.stations.map(s => `<option value="${s.code}">${s.name}</option>`).join('')}
+                </select>
+                <select id="newMtrDir" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs">
+                  ${linePreset.dirs.map(d => `<option value="${d.code}">${d.label}</option>`).join('')}
+                </select>
+              </div>
+
+              <!-- Bus Input Fields -->
+              <div id="newBusFields" class="hidden grid grid-cols-3 gap-1.5">
+                <input id="newBusRoute" type="text" placeholder="路線 (如 2F / 701)" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs" />
+                <input id="newBusStop" type="text" placeholder="上車站名" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs" />
+                <input id="newBusDest" type="text" placeholder="方向 (如 往尖沙咀)" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs" />
+              </div>
+
+              <button onclick="addNewTransitRoute()" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow">+ 加入到站路線</button>
+            </div>
+          </div>
+        `;
       }
 
       body.innerHTML = `
@@ -2121,6 +2226,111 @@
       if (rowSpan !== undefined) w.mobRowSpan = rowSpan;
       saveState();
       renderBoard();
+    }
+
+    /* Transit Route Management Helpers */
+    function setTransitDisplayMode(mode) {
+      state.transitDisplayMode = mode;
+      saveState();
+      renderBoard();
+      openWidgetSettings('transit');
+    }
+
+    function updateTransitWalkMin(id, val) {
+      const item = state.transitItems.find(t => t.id === id);
+      if (!item) return;
+      item.walkMin = Math.max(0, Number(val) || 0);
+      saveState();
+      renderBoard();
+      showToast(`已更新步行時間為 ${item.walkMin} 分鐘`);
+    }
+
+    function removeTransitItem(id) {
+      state.transitItems = state.transitItems.filter(t => t.id !== id);
+      saveState();
+      renderBoard();
+      openWidgetSettings('transit');
+      showToast('已移除路線');
+    }
+
+    function onNewTransitTypeChange() {
+      const t = document.getElementById('newTransitType').value;
+      const mtrBox = document.getElementById('newMtrFields');
+      const busBox = document.getElementById('newBusFields');
+      if (t === 'mtr') {
+        mtrBox.classList.remove('hidden');
+        busBox.classList.add('hidden');
+      } else {
+        mtrBox.classList.add('hidden');
+        busBox.classList.remove('hidden');
+      }
+    }
+
+    function onNewMtrLineChange() {
+      const lineCode = document.getElementById('newMtrLine').value;
+      const preset = MTR_LINE_PRESETS[lineCode];
+      if (!preset) return;
+      document.getElementById('newMtrSta').innerHTML = preset.stations.map(s => `<option value="${s.code}">${s.name}</option>`).join('');
+      document.getElementById('newMtrDir').innerHTML = preset.dirs.map(d => `<option value="${d.code}">${d.label}</option>`).join('');
+    }
+
+    function addNewTransitRoute() {
+      const type = document.getElementById('newTransitType').value;
+      const walkMin = Math.max(0, Number(document.getElementById('newTransitWalk').value) || 0);
+
+      if (type === 'mtr') {
+        const line = document.getElementById('newMtrLine').value;
+        const sta = document.getElementById('newMtrSta').value;
+        const dir = document.getElementById('newMtrDir').value;
+        const preset = MTR_LINE_PRESETS[line];
+        const staObj = preset.stations.find(s => s.code === sta) || { name: sta };
+        const dirObj = preset.dirs.find(d => d.code === dir) || { label: dir };
+        state.transitItems.push({
+          id: 'tr_' + Date.now(),
+          type: 'mtr',
+          line,
+          lineName: preset.name,
+          color: preset.color,
+          sta,
+          staName: staObj.name,
+          dir,
+          dest: dirObj.label,
+          walkMin,
+          etaMin: walkMin + 3,
+          upcomingMins: [Math.max(1, walkMin - 2), walkMin + 3, walkMin + 8],
+          status: '準備出門'
+        });
+      } else {
+        const route = document.getElementById('newBusRoute').value.trim().toUpperCase();
+        const stop = document.getElementById('newBusStop').value.trim();
+        const dest = document.getElementById('newBusDest').value.trim() || '往總站';
+        if (!route || !stop) {
+          showToast('請輸入巴士路線及上車站名');
+          return;
+        }
+        const isCtb = /^\d{3}|^[A-Z]\d+/.test(route);
+        state.transitItems.push({
+          id: 'tr_' + Date.now(),
+          type: 'bus',
+          line: route,
+          lineName: `${isCtb ? '城巴' : '九巴'} ${route}`,
+          color: isCtb ? '#eab308' : '#ef4444',
+          sta: stop,
+          staName: stop,
+          dir: 'O',
+          dest: dest.startsWith('往') ? dest : '往' + dest,
+          walkMin,
+          etaMin: walkMin + 4,
+          upcomingMins: [Math.max(1, walkMin - 1), walkMin + 4, walkMin + 14],
+          status: '準備出門'
+        });
+      }
+
+      saveState();
+      refreshTransitLive(false);
+      renderBoard();
+      openWidgetSettings('transit');
+      showToast('已新增交通路線');
     }
 
     /* Widget Gallery Modal */
@@ -2383,6 +2593,7 @@
     async function refreshTransitLive(manual = false) {
       try {
         for (const item of state.transitItems) {
+          const walk = Math.max(0, Number(item.walkMin) || 0);
           if (item.type === 'mtr') {
             const url = `https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=${item.line}&sta=${item.sta}`;
             const res = await fetch(url);
@@ -2390,12 +2601,36 @@
             const key = `${item.line}-${item.sta}`;
             const trains = data.data && data.data[key] && data.data[key][item.dir];
             if (trains && trains.length) {
-              const ttnt = parseInt(trains[0].ttnt, 10);
-              if (!isNaN(ttnt)) {
-                item.etaMin = Math.max(1, ttnt);
-                item.status = ttnt <= item.walkMin ? '剛開出' : '準備出門';
+              const minsList = trains
+                .map(t => parseInt(t.ttnt, 10))
+                .filter(n => !isNaN(n))
+                .map(n => Math.max(1, n));
+              if (minsList.length) {
+                item.upcomingMins = minsList;
+                const catchable = minsList.find(m => m >= walk);
+                item.etaMin = catchable !== undefined ? catchable : minsList[minsList.length - 1];
+                item.status = `步行 ${walk} 分`;
               }
             }
+          } else if (item.type === 'bus') {
+            // Query KMB & Citybus Open Data ETA by route match if available
+            try {
+              const kmbRes = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/route-eta/${encodeURIComponent(item.line)}/1`);
+              const kmbJson = await kmbRes.json();
+              if (kmbJson && Array.isArray(kmbJson.data) && kmbJson.data.length) {
+                const nowMs = Date.now();
+                const minsList = kmbJson.data
+                  .filter(row => row.eta)
+                  .slice(0, 4)
+                  .map(row => Math.max(1, Math.round((new Date(row.eta).getTime() - nowMs) / 60000)))
+                  .filter(m => m >= 0 && m <= 90);
+                if (minsList.length) {
+                  item.upcomingMins = minsList;
+                  const catchable = minsList.find(m => m >= walk);
+                  item.etaMin = catchable !== undefined ? catchable : minsList[minsList.length - 1];
+                }
+              }
+            } catch (busErr) {}
           }
         }
         saveState();

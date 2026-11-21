@@ -754,9 +754,9 @@
       lastCloudSyncTime: '',
       widgets: JSON.parse(JSON.stringify(DEFAULT_WIDGETS)),
       transitItems: [
-        { id: 't1', type: 'mtr', line: 'TCL', lineName: '東涌線', color: '#f3982d', sta: 'NAC', staName: '南昌站', dir: 'DT', dest: '往香港', walkMin: 5, etaMin: 7, upcomingMins: [4, 7, 12], trains: [], hasFetched: false, status: '準備出門' },
-        { id: 't2', type: 'mtr', line: 'TWL', lineName: '荃灣線', color: '#e60012', sta: 'SSP', staName: '深水埗站', dir: 'UT', dest: '往荃灣', walkMin: 6, etaMin: 8, upcomingMins: [2, 8, 14], trains: [], hasFetched: false, status: '準備出門' },
-        { id: 't3', type: 'bus', line: '701', lineName: '城巴 701', color: '#eab308', sta: '富昌邨', staName: '富昌邨', dir: 'I', dest: '往旺角', walkMin: 4, etaMin: 7, upcomingMins: [7, 19], trains: [], hasFetched: false, status: '準備出門' }
+        { id: 't1', type: 'mtr', line: 'TCL', lineName: '東涌線', color: '#f3982d', sta: 'NAC', staName: '南昌站', dir: 'DOWN', dest: '往香港', walkMin: 5, etaMin: 7, upcomingMins: [4, 7, 12], trains: [], hasFetched: false, status: '準備出門' },
+        { id: 't2', type: 'mtr', line: 'TWL', lineName: '荃灣線', color: '#e60012', sta: 'SSP', staName: '深水埗站', dir: 'UP', dest: '往荃灣', walkMin: 6, etaMin: 8, upcomingMins: [2, 8, 14], trains: [], hasFetched: false, status: '準備出門' },
+        { id: 't3', type: 'bus', operator: 'CTB', line: '701', lineName: '城巴 701', color: '#eab308', sta: '002777', stopId: '002777', staName: '富昌邨', dir: 'inbound', serviceType: '1', dest: '往海麗邨', walkMin: 4, etaMin: 7, upcomingMins: [7, 19], trains: [], hasFetched: false, status: '準備出門' }
       ],
       todos: [
         { id: 'td1', text: '檢查屋企物資', done: false, severity: '⚠️', due: '今日', dueType: 'today', owner: 'Miranda' },
@@ -2265,11 +2265,20 @@
                 </select>
               </div>
 
-              <!-- Bus Input Fields -->
-              <div id="newBusFields" class="hidden grid grid-cols-3 gap-1.5">
-                <input id="newBusRoute" type="text" placeholder="路線 (如 2F / 701)" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs" />
-                <input id="newBusStop" type="text" placeholder="上車站名" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs" />
-                <input id="newBusDest" type="text" placeholder="方向 (如 往尖沙咀)" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs" />
+              <!-- Bus Route Lookup + Dropdown Menus -->
+              <div id="newBusFields" class="hidden space-y-1.5">
+                <div class="flex items-center gap-1.5">
+                  <input id="newBusRoute" type="text" placeholder="輸入巴士線號 (如 2F / 701 / 968)" onkeydown="if(event.key==='Enter'){event.preventDefault();lookupBusRouteDropdowns();}" class="flex-1 px-2.5 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black uppercase text-xs" />
+                  <button type="button" id="busLookupBtn" onclick="lookupBusRouteDropdowns()" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shrink-0 shadow">搜尋方向/站點</button>
+                </div>
+                <div class="grid grid-cols-2 gap-1.5">
+                  <select id="newBusDirSelect" onchange="onBusDirectionSelectChange()" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs">
+                    <option value="">請先輸入線號按搜尋</option>
+                  </select>
+                  <select id="newBusStopSelect" class="px-2 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs">
+                    <option value="">上車站點選單</option>
+                  </select>
+                </div>
               </div>
 
               <button onclick="addNewTransitRoute()" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow">+ 加入到站路線</button>
@@ -2480,6 +2489,149 @@
       document.getElementById('newMtrDir').innerHTML = preset.dirs.map(d => `<option value="${d.code}">${d.label}</option>`).join('');
     }
 
+    let busLookupCandidates = [];
+    const kmbStopDetailMap = {};
+    const ctbStopDetailMap = {};
+
+    async function ensureKmbStopCache() {
+      if (Array.isArray(kmbStopNameCache) && kmbStopNameCache.length) return kmbStopNameCache;
+      const json = await fetchJsonWithCorsFallback('https://data.etabus.gov.hk/v1/transport/kmb/stop');
+      if (json && Array.isArray(json.data)) {
+        kmbStopNameCache = json.data;
+        json.data.forEach(s => {
+          if (s.stop) kmbStopDetailMap[s.stop] = s.name_tc || s.name_en || s.stop;
+        });
+      }
+      return kmbStopNameCache || [];
+    }
+
+    async function getCtbStopNameById(stopId) {
+      if (!stopId) return '';
+      if (ctbStopDetailMap[stopId]) return ctbStopDetailMap[stopId];
+      const json = await fetchJsonWithCorsFallback(`https://rt.data.gov.hk/v2/transport/citybus/stop/${encodeURIComponent(stopId)}`);
+      if (json && json.data) {
+        const nm = json.data.name_tc || json.data.name_en || stopId;
+        ctbStopDetailMap[stopId] = nm;
+        return nm;
+      }
+      return stopId;
+    }
+
+    async function lookupBusRouteDropdowns() {
+      const routeInp = document.getElementById('newBusRoute');
+      const dirSel = document.getElementById('newBusDirSelect');
+      const stopSel = document.getElementById('newBusStopSelect');
+      const btn = document.getElementById('busLookupBtn');
+      const route = routeInp ? routeInp.value.trim().toUpperCase().replace(/\s+/g, '') : '';
+      if (!route) {
+        showToast('請先輸入巴士路線號碼');
+        return;
+      }
+
+      if (btn) btn.textContent = '搜尋中...';
+      if (dirSel) dirSel.innerHTML = '<option value="">正在搜尋方向...</option>';
+      if (stopSel) stopSel.innerHTML = '<option value="">請稍候...</option>';
+      busLookupCandidates = [];
+
+      try {
+        // 1. Query KMB Route Variants (O / I)
+        const kmbRoutesJson = await fetchJsonWithCorsFallback('https://data.etabus.gov.hk/v1/transport/kmb/route/');
+        if (kmbRoutesJson && Array.isArray(kmbRoutesJson.data)) {
+          const matches = kmbRoutesJson.data.filter(r => r.route === route);
+          matches.forEach((m, idx) => {
+            busLookupCandidates.push({
+              key: `KMB_${m.bound}_${m.service_type}_${idx}`,
+              operator: 'KMB',
+              route,
+              bound: m.bound,
+              dirWord: m.bound === 'O' ? 'outbound' : 'inbound',
+              serviceType: String(m.service_type || '1'),
+              destTc: m.dest_tc || '',
+              origTc: m.orig_tc || '',
+              label: `九巴 · 往${m.dest_tc}${String(m.service_type) !== '1' ? ' (特別班)' : ''}`
+            });
+          });
+        }
+
+        // 2. Query Citybus (CTB) Route Variants
+        const ctbRouteJson = await fetchJsonWithCorsFallback(`https://rt.data.gov.hk/v2/transport/citybus/route/CTB/${encodeURIComponent(route)}`);
+        if (ctbRouteJson && ctbRouteJson.data && (ctbRouteJson.data.orig_tc || ctbRouteJson.data.dest_tc)) {
+          const d = ctbRouteJson.data;
+          busLookupCandidates.push({
+            key: 'CTB_outbound',
+            operator: 'CTB',
+            route,
+            bound: 'O',
+            dirWord: 'outbound',
+            serviceType: '1',
+            destTc: d.dest_tc || '',
+            origTc: d.orig_tc || '',
+            label: `城巴 · 往${d.dest_tc}`
+          });
+          busLookupCandidates.push({
+            key: 'CTB_inbound',
+            operator: 'CTB',
+            route,
+            bound: 'I',
+            dirWord: 'inbound',
+            serviceType: '1',
+            destTc: d.orig_tc || '',
+            origTc: d.dest_tc || '',
+            label: `城巴 · 往${d.orig_tc}`
+          });
+        }
+
+        if (!busLookupCandidates.length) {
+          if (dirSel) dirSel.innerHTML = '<option value="">找不到此巴士路線</option>';
+          if (stopSel) stopSel.innerHTML = '<option value="">請檢查路線號碼</option>';
+          showToast(`找不到巴士路線 ${route}`);
+          return;
+        }
+
+        if (dirSel) {
+          dirSel.innerHTML = busLookupCandidates.map(c => `<option value="${escapeHtml(c.key)}">${escapeHtml(c.label)}</option>`).join('');
+        }
+        await onBusDirectionSelectChange();
+      } finally {
+        if (btn) btn.textContent = '搜尋方向/站點';
+      }
+    }
+
+    async function onBusDirectionSelectChange() {
+      const dirSel = document.getElementById('newBusDirSelect');
+      const stopSel = document.getElementById('newBusStopSelect');
+      if (!dirSel || !stopSel) return;
+      const cand = busLookupCandidates.find(c => c.key === dirSel.value);
+      if (!cand) return;
+
+      stopSel.innerHTML = '<option value="">載入沿線車站中...</option>';
+
+      if (cand.operator === 'KMB') {
+        await ensureKmbStopCache();
+        const rsJson = await fetchJsonWithCorsFallback(`https://data.etabus.gov.hk/v1/transport/kmb/route-stop/${encodeURIComponent(cand.route)}/${cand.dirWord}/${encodeURIComponent(cand.serviceType)}`);
+        if (rsJson && Array.isArray(rsJson.data) && rsJson.data.length) {
+          stopSel.innerHTML = rsJson.data.map(row => {
+            const nm = kmbStopDetailMap[row.stop] || row.stop;
+            return `<option value="${escapeHtml(row.stop)}" data-stop-name="${escapeHtml(nm)}">${escapeHtml(row.seq)}. ${escapeHtml(nm)}</option>`;
+          }).join('');
+        } else {
+          stopSel.innerHTML = '<option value="">暫無站點資料</option>';
+        }
+      } else if (cand.operator === 'CTB') {
+        const rsJson = await fetchJsonWithCorsFallback(`https://rt.data.gov.hk/v2/transport/citybus/route-stop/CTB/${encodeURIComponent(cand.route)}/${cand.dirWord}`);
+        if (rsJson && Array.isArray(rsJson.data) && rsJson.data.length) {
+          const rows = rsJson.data;
+          const names = await Promise.all(rows.map(r => getCtbStopNameById(r.stop)));
+          stopSel.innerHTML = rows.map((row, idx) => {
+            const nm = names[idx] || row.stop;
+            return `<option value="${escapeHtml(row.stop)}" data-stop-name="${escapeHtml(nm)}">${escapeHtml(row.seq)}. ${escapeHtml(nm)}</option>`;
+          }).join('');
+        } else {
+          stopSel.innerHTML = '<option value="">暫無站點資料</option>';
+        }
+      }
+    }
+
     function addNewTransitRoute() {
       const type = document.getElementById('newTransitType').value;
       const walkMin = Math.min(45, Math.max(0, Number(document.getElementById('newTransitWalk').value) || 0));
@@ -2509,27 +2661,35 @@
           status: '準備出門'
         });
       } else {
-        const route = document.getElementById('newBusRoute').value.trim().toUpperCase();
-        const stop = document.getElementById('newBusStop').value.trim();
-        const dest = document.getElementById('newBusDest').value.trim() || '往總站';
-        if (!route || !stop) {
-          showToast('請輸入巴士路線及上車站名');
+        const dirSel = document.getElementById('newBusDirSelect');
+        const stopSel = document.getElementById('newBusStopSelect');
+        const cand = busLookupCandidates.find(c => c.key === (dirSel ? dirSel.value : ''));
+        const stopId = stopSel ? stopSel.value : '';
+        const selectedOpt = stopSel && stopSel.selectedOptions && stopSel.selectedOptions[0];
+        const stopName = selectedOpt ? (selectedOpt.dataset.stopName || selectedOpt.textContent.replace(/^\d+\.\s*/, '')) : '';
+
+        if (!cand || !stopId) {
+          showToast('請先輸入巴士線號並從下拉選單揀選方向及上車站');
           return;
         }
-        const isCtb = /^\d{3}|^[A-Z]\d+/.test(route);
+        const isCtb = cand.operator === 'CTB';
         state.transitItems.push({
           id: 'tr_' + Date.now(),
           type: 'bus',
-          line: route,
-          lineName: `${isCtb ? '城巴' : '九巴'} ${route}`,
+          operator: cand.operator,
+          line: cand.route,
+          lineName: `${isCtb ? '城巴' : '九巴'} ${cand.route}`,
           color: isCtb ? '#eab308' : '#ef4444',
-          sta: stop,
-          staName: stop,
-          dir: 'O',
-          dest: dest.startsWith('往') ? dest : '往' + dest,
+          sta: stopId,
+          stopId,
+          staName: stopName,
+          dir: cand.dirWord,
+          bound: cand.bound,
+          serviceType: cand.serviceType || '1',
+          dest: cand.destTc ? `往${cand.destTc}` : '往總站',
           walkMin,
           etaMin: walkMin + 4,
-          upcomingMins: [Math.max(1, walkMin - 1), walkMin + 4, walkMin + 14],
+          upcomingMins: [],
           trains: [],
           hasFetched: false,
           status: '準備出門'
@@ -3023,12 +3183,7 @@
     async function resolveKmbStopIdByName(stopName) {
       const cleanName = String(stopName || '').trim();
       if (!cleanName) return null;
-      if (!kmbStopNameCache) {
-        const json = await fetchJsonWithCorsFallback('https://data.etabus.gov.hk/v1/transport/kmb/stop');
-        if (json && Array.isArray(json.data)) {
-          kmbStopNameCache = json.data;
-        }
-      }
+      await ensureKmbStopCache();
       if (!Array.isArray(kmbStopNameCache)) return null;
       const exact = kmbStopNameCache.find(s => s.name_tc && s.name_tc === cleanName);
       if (exact) return exact.stop;
@@ -3082,15 +3237,16 @@
             let parsedBusTrains = [];
             const cleanRoute = String(item.line || '').trim().toUpperCase();
             const destHint = String(item.dest || '').replace(/^往/, '').trim();
+            const explicitStopId = item.stopId || (/^[0-9A-F]{6,16}$/i.test(String(item.sta || '')) ? item.sta : '');
+            const svcType = item.serviceType || '1';
 
-            // 1. Try KMB Stop-Specific ETA first if stop name matches KMB stop list
-            const matchedStopId = await resolveKmbStopIdByName(item.staName || item.sta);
-            if (matchedStopId) {
-              const stopEtaJson = await fetchJsonWithCorsFallback(`https://data.etabus.gov.hk/v1/transport/kmb/eta/${encodeURIComponent(matchedStopId)}/${encodeURIComponent(cleanRoute)}/1`);
+            // 1. Direct KMB Stop ETA when official stopId was chosen from dropdown
+            if (explicitStopId && item.operator !== 'CTB') {
+              const stopEtaJson = await fetchJsonWithCorsFallback(`https://data.etabus.gov.hk/v1/transport/kmb/eta/${encodeURIComponent(explicitStopId)}/${encodeURIComponent(cleanRoute)}/${encodeURIComponent(svcType)}`);
               if (stopEtaJson && Array.isArray(stopEtaJson.data)) {
                 stopEtaJson.data.forEach(row => {
                   if (!row.eta) return;
-                  if (destHint && row.dest_tc && !row.dest_tc.includes(destHint)) return;
+                  if (item.bound && row.dir && row.dir !== item.bound) return;
                   const depTs = parseHKTimestamp(row.eta);
                   if (depTs > nowMs && parsedBusTrains.length < 6) {
                     parsedBusTrains.push({
@@ -3103,21 +3259,36 @@
               }
             }
 
-            // 2. Try KMB Route-ETA across service types 1 & 2
+            // 2. Direct Citybus CTB v2 Stop ETA when official stopId was chosen from dropdown
+            if (!parsedBusTrains.length && explicitStopId && item.operator !== 'KMB') {
+              const ctbJson = await fetchJsonWithCorsFallback(`https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/${encodeURIComponent(explicitStopId)}/${encodeURIComponent(cleanRoute)}`);
+              if (ctbJson && Array.isArray(ctbJson.data)) {
+                ctbJson.data.forEach(row => {
+                  if (!row.eta) return;
+                  if (item.bound && row.dir && row.dir !== item.bound) return;
+                  const depTs = parseHKTimestamp(row.eta);
+                  if (depTs > nowMs && parsedBusTrains.length < 6) {
+                    parsedBusTrains.push({
+                      depTs,
+                      plat: String(row.seq || '1'),
+                      dest: row.dest_tc ? `往${row.dest_tc}` : item.dest
+                    });
+                  }
+                });
+              }
+            }
+
+            // 3. Fallback KMB Stop-Name matching for legacy manually entered routes
             if (!parsedBusTrains.length) {
-              for (const svcType of ['1', '2']) {
-                if (parsedBusTrains.length) break;
-                const kmbJson = await fetchJsonWithCorsFallback(`https://data.etabus.gov.hk/v1/transport/kmb/route-eta/${encodeURIComponent(cleanRoute)}/${svcType}`);
-                if (kmbJson && Array.isArray(kmbJson.data) && kmbJson.data.length) {
-                  const seenTs = new Set();
-                  const filteredRows = kmbJson.data.filter(r => r.eta && (!destHint || (r.dest_tc && r.dest_tc.includes(destHint))));
-                  const sourceRows = filteredRows.length ? filteredRows : kmbJson.data;
-                  sourceRows.forEach(row => {
+              const matchedStopId = await resolveKmbStopIdByName(item.staName || item.sta);
+              if (matchedStopId) {
+                const stopEtaJson = await fetchJsonWithCorsFallback(`https://data.etabus.gov.hk/v1/transport/kmb/eta/${encodeURIComponent(matchedStopId)}/${encodeURIComponent(cleanRoute)}/1`);
+                if (stopEtaJson && Array.isArray(stopEtaJson.data)) {
+                  stopEtaJson.data.forEach(row => {
                     if (!row.eta) return;
+                    if (destHint && row.dest_tc && !row.dest_tc.includes(destHint)) return;
                     const depTs = parseHKTimestamp(row.eta);
-                    const bucket = Math.floor(depTs / 60000);
-                    if (depTs > nowMs && !seenTs.has(bucket) && parsedBusTrains.length < 6) {
-                      seenTs.add(bucket);
+                    if (depTs > nowMs && parsedBusTrains.length < 6) {
                       parsedBusTrains.push({
                         depTs,
                         plat: String(row.seq || '1'),
@@ -3125,34 +3296,6 @@
                       });
                     }
                   });
-                }
-              }
-            }
-
-            // 3. Try Citybus CTB v2 Route-Stop + ETA
-            if (!parsedBusTrains.length) {
-              for (const dirWord of ['outbound', 'inbound']) {
-                if (parsedBusTrains.length) break;
-                const rsJson = await fetchJsonWithCorsFallback(`https://rt.data.gov.hk/v2/transport/citybus/route-stop/CTB/${encodeURIComponent(cleanRoute)}/${dirWord}`);
-                if (rsJson && Array.isArray(rsJson.data) && rsJson.data.length) {
-                  const pickStop = rsJson.data[Math.min(2, rsJson.data.length - 1)];
-                  if (pickStop && pickStop.stop) {
-                    const ctbJson = await fetchJsonWithCorsFallback(`https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/${encodeURIComponent(pickStop.stop)}/${encodeURIComponent(cleanRoute)}`);
-                    if (ctbJson && Array.isArray(ctbJson.data)) {
-                      ctbJson.data.forEach(row => {
-                        if (!row.eta) return;
-                        if (destHint && row.dest_tc && !row.dest_tc.includes(destHint)) return;
-                        const depTs = parseHKTimestamp(row.eta);
-                        if (depTs > nowMs && parsedBusTrains.length < 6) {
-                          parsedBusTrains.push({
-                            depTs,
-                            plat: String(row.seq || '1'),
-                            dest: row.dest_tc ? `往${row.dest_tc}` : item.dest
-                          });
-                        }
-                      });
-                    }
-                  }
                 }
               }
             }

@@ -37,10 +37,10 @@
     }
 
     html.dark {
-      --bg-canvas: #090d16;
-      --card-bg: rgba(24, 31, 48, 0.82);
-      --card-border: rgba(255, 255, 255, 0.09);
-      --card-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.55);
+      --bg-canvas: #000000;
+      --card-bg: rgba(15, 20, 32, 0.88);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.78);
       --text-primary: #f8fafc;
       --accent-color: #818cf8;
     }
@@ -90,10 +90,10 @@
       line-height: 0.94;
     }
     .hero-temp-num {
-      font-size: clamp(1.85em, 4.4vw, 4.5em);
+      font-size: clamp(2.1em, 4.8vw, 4.8em);
       font-weight: 900;
-      letter-spacing: -0.04em;
-      line-height: 0.95;
+      letter-spacing: -0.045em;
+      line-height: 0.92;
     }
     .hero-world-num {
       font-size: clamp(1.6em, 3.5vw, 3.6em);
@@ -126,13 +126,13 @@
 
     /* Dynamic Living Sky & Weather Card Themes */
     .bento-card.sky-clear-day {
-      background: linear-gradient(145deg, #1b6ca8 0%, #2f89c5 52%, #5cb3e6 100%);
+      background: linear-gradient(145deg, #2b6cb0 0%, #4285c4 52%, #6ba4d9 100%);
       color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.34);
+      border-color: rgba(255, 255, 255, 0.32);
     }
 
     .bento-card.sky-cloudy-day {
-      background: linear-gradient(145deg, #355c85 0%, #4e79a4 55%, #739bc2 100%);
+      background: linear-gradient(145deg, #335c81 0%, #4a769e 55%, #6592b8 100%);
       color: #ffffff;
       border-color: rgba(255, 255, 255, 0.28);
     }
@@ -184,7 +184,7 @@
       width: 118px;
       height: 118px;
       border-radius: 9999px;
-      background: radial-gradient(circle, rgba(254, 240, 138, 0.85) 0%, rgba(253, 224, 71, 0.34) 45%, rgba(253, 224, 71, 0) 72%);
+      background: radial-gradient(circle, rgba(254, 240, 138, 0.52) 0%, rgba(253, 224, 71, 0.18) 48%, rgba(253, 224, 71, 0) 74%);
       animation: sunPulse 6s ease-in-out infinite;
     }
 
@@ -201,8 +201,8 @@
     }
 
     @keyframes sunPulse {
-      0%, 100% { transform: scale(1); opacity: 0.88; }
-      50% { transform: scale(1.14); opacity: 1; }
+      0%, 100% { transform: scale(1); opacity: 0.85; }
+      50% { transform: scale(1.12); opacity: 1; }
     }
 
     .sky-cloud {
@@ -506,7 +506,7 @@
 <body>
 
   <!-- Top Control Bar -->
-  <header class="w-full max-w-[1600px] mx-auto px-3 sm:px-5 pt-2.5 pb-1.5 flex items-center justify-between gap-2 z-30 shrink-0">
+  <header class="w-full max-w-[1600px] mx-auto pl-11 sm:pl-14 pr-3 sm:pr-5 pt-2.5 pb-1.5 flex items-center justify-between gap-2 z-30 shrink-0">
     <div class="flex items-center gap-2 min-w-0">
       <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-md shrink-0">
         <i class="fa-solid fa-house-signal text-xs"></i>
@@ -697,19 +697,22 @@
   <script>
     const STORAGE_KEY = 'miranda_angus_home_dashboard_v8';
     const DEFAULT_AIRLABS_API_KEY = '1499e0a2-14ce-4fd6-bf0f-84ffdf71e366';
+    const DEFAULT_FINNHUB_API_KEY = 'dc2jqe1r01qjj5fivdr0dc2jqe1r01qjj5fivdrg';
     const DEFAULT_SHARED_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1RTS1syTpFN2BtLcEU1EftanHTvp6cZ4kBM-OzlIaVcc/edit?usp=drivesdk';
     const DEFAULT_MESSAGE_SHEET_URL = DEFAULT_SHARED_SHEET_URL;
     const DEFAULT_MESSAGE_SHEET_TAB = '家庭留言板';
+    const DEFAULT_ANNIVERSARY_SHEET_TAB = '紀念日';
 
     const DEFAULT_WIDGETS = [
-      // Page 1: Bento Master Layout (12x12)
+      // Page 1: iPad Bento Master Layout (12x12)
       { id: 'clock', title: '時鐘與日期', page: 1, x: 1, y: 1, w: 4, h: 4, mobColSpan: 2, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
       { id: 'message', title: '家庭留言板', page: 1, x: 5, y: 1, w: 2, h: 4, mobColSpan: 2, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: false },
       { id: 'weather', title: '香港分區天氣', page: 1, x: 7, y: 1, w: 6, h: 6, mobColSpan: 2, mobRowSpan: 4, visible: true, fontScale: 1, showTitle: true },
-      { id: 'worldClock', title: '世界時鐘', page: 1, x: 1, y: 5, w: 2, h: 3, mobColSpan: 1, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
-      { id: 'transit', title: '實時交通到站', page: 1, x: 3, y: 5, w: 4, h: 3, mobColSpan: 1, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
+      { id: 'worldClock', title: '世界時鐘', page: 1, x: 1, y: 5, w: 3, h: 3, mobColSpan: 1, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
+      { id: 'transit', title: '實時交通到站', page: 1, x: 4, y: 5, w: 3, h: 3, mobColSpan: 1, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
       { id: 'aqhi', title: '空氣質素 AQHI', page: 1, x: 1, y: 8, w: 2, h: 3, mobColSpan: 1, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
-      { id: 'finance', title: '美股即時行情', page: 1, x: 3, y: 8, w: 4, h: 3, mobColSpan: 1, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
+      { id: 'finance', title: '美股即時行情', page: 1, x: 3, y: 8, w: 2, h: 3, mobColSpan: 1, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
+      { id: 'countdown', title: '重要紀念日 / 倒數', page: 1, x: 5, y: 8, w: 2, h: 3, mobColSpan: 2, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
       { id: 'todo', title: '屋企待辦清單', page: 1, x: 7, y: 7, w: 2, h: 4, mobColSpan: 2, mobRowSpan: 4, visible: true, fontScale: 1, showTitle: true },
       { id: 'flight', title: '航班追蹤', page: 1, x: 9, y: 7, w: 4, h: 4, mobColSpan: 2, mobRowSpan: 4, visible: true, fontScale: 1, showTitle: false },
       { id: 'news', title: 'RTHK 即時新聞', page: 1, x: 1, y: 11, w: 12, h: 2, mobColSpan: 2, mobRowSpan: 2, visible: true, fontScale: 1, showTitle: false },
@@ -718,6 +721,22 @@
       { id: 'calendar', title: '日曆行程', page: 2, x: 1, y: 1, w: 6, h: 7, mobColSpan: 2, mobRowSpan: 4, visible: true, fontScale: 1, showTitle: true },
       { id: 'meds', title: '食藥與保健提醒', page: 2, x: 7, y: 1, w: 6, h: 7, mobColSpan: 2, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true },
       { id: 'quickLinks', title: '常用快捷捷徑', page: 2, x: 1, y: 8, w: 12, h: 5, mobColSpan: 2, mobRowSpan: 3, visible: true, fontScale: 1, showTitle: true }
+    ];
+
+    const HK_HOLIDAY_PRESETS = [
+      { id: 'hk_xmas_2026', title: '🎄 聖誕節 (紅假)', date: '2026-12-25', category: 'holiday', repeatYearly: true },
+      { id: 'hk_boxing_2026', title: '🎁 聖誕節後第一個週日', date: '2026-12-26', category: 'holiday', repeatYearly: true },
+      { id: 'hk_newyear_2027', title: '🎆 元旦日 (紅假)', date: '2027-01-01', category: 'holiday', repeatYearly: true },
+      { id: 'hk_cny_2027', title: '🧧 農曆年初一 (紅假)', date: '2027-02-06', category: 'holiday', repeatYearly: false },
+      { id: 'hk_easter_2027', title: '🐣 耶穌受難節 (紅假)', date: '2027-03-26', category: 'holiday', repeatYearly: false },
+      { id: 'hk_chingming_2027', title: '🌿 清明節 (紅假)', date: '2027-04-05', category: 'holiday', repeatYearly: true },
+      { id: 'hk_labour_2027', title: '🛠️ 勞動節 (紅假)', date: '2027-05-01', category: 'holiday', repeatYearly: true },
+      { id: 'hk_buddha_2027', title: '🪷 佛誕 (紅假)', date: '2027-05-13', category: 'holiday', repeatYearly: false },
+      { id: 'hk_dragonboat_2027', title: '🚣 端午節 (紅假)', date: '2027-06-09', category: 'holiday', repeatYearly: false },
+      { id: 'hk_hksar_2027', title: '🇭🇰 香港特區成立紀念日', date: '2027-07-01', category: 'holiday', repeatYearly: true },
+      { id: 'hk_midautumn_2027', title: '🥮 中秋節翌日 (紅假)', date: '2027-09-16', category: 'holiday', repeatYearly: false },
+      { id: 'hk_national_2027', title: '🇨🇳 國慶日 (紅假)', date: '2027-10-01', category: 'holiday', repeatYearly: true },
+      { id: 'hk_chungyeung_2027', title: '⛰️ 重陽節 (紅假)', date: '2027-10-08', category: 'holiday', repeatYearly: false }
     ];
 
     const FLIGHT_PERSON_EMOJIS = ['👵🏻', '👨🏻', '👩🏻‍🦱', '👦🏻', '👶🏻', '👴🏻', '🤡', '😎'];
@@ -737,16 +756,21 @@
       googleSheetTab: '',
       messageSheetUrl: DEFAULT_MESSAGE_SHEET_URL,
       messageSheetTab: DEFAULT_MESSAGE_SHEET_TAB,
-      messageFontSize: 20,
+      anniversarySheetUrl: DEFAULT_SHARED_SHEET_URL,
+      anniversarySheetTab: DEFAULT_ANNIVERSARY_SHEET_TAB,
+      countdownUpcomingOnly: true,
+      selectedCountdownIds: ['hk_xmas_2026', 'hk_newyear_2027', 'hk_cny_2027'],
+      anniversaries: [],
+      messageFontSize: 26,
       messageBgColor: '',
-      messageTextColor: '',
+      messageTextColor: '#f43f5e',
       todoFilterDue: 'today',
       todoFilterSeverity: 'all',
       todoFilterOwner: 'all',
-      newsTickerOnly: false,
+      newsTickerOnly: true,
       financeTickers: ['NVDA', 'AAPL', 'TSLA', 'MSFT'],
       financeTickerOnly: true,
-      finnhubApiKey: '',
+      finnhubApiKey: DEFAULT_FINNHUB_API_KEY,
       airlabsApiKey: DEFAULT_AIRLABS_API_KEY,
       transitDisplayMode: 'minutes',
       githubToken: '',
@@ -839,18 +863,20 @@
     let state = loadState();
     let liveData = {
       weather: {
-        temp: 13,
-        max: 20,
-        min: 13,
-        desc: '多雲，稍後間中有幾陣微雨',
-        uv: 6,
-        icon: 'fa-cloud',
+        temp: 22,
+        max: 22,
+        min: 17,
+        humidity: 77,
+        desc: '大致多雲。下午短暫時間有陽光。今晚天氣稍涼。吹和緩東至東北風。',
+        uv: 3,
+        icon: 'fa-cloud-sun',
+        warnings: [],
         forecast: [
-          { day: '22 (日)', icon: 'fa-cloud-rain', max: 21, min: 18 },
-          { day: '23 (一)', icon: 'fa-cloud-rain', max: 23, min: 21 },
-          { day: '24 (二)', icon: 'fa-cloud-rain', max: 22, min: 16 },
-          { day: '25 (三)', icon: 'fa-cloud-showers-heavy', max: 17, min: 14 },
-          { day: '26 (四)', icon: 'fa-cloud-rain', max: 22, min: 14 }
+          { day: '25 (三)', icon: 'fa-cloud-rain', max: 21, min: 17 },
+          { day: '26 (四)', icon: 'fa-cloud', max: 22, min: 17 },
+          { day: '27 (五)', icon: 'fa-cloud', max: 25, min: 20 },
+          { day: '28 (六)', icon: 'fa-sun', max: 26, min: 20 },
+          { day: '29 (日)', icon: 'fa-sun', max: 24, min: 19 }
         ]
       },
       aqhi: {
@@ -874,6 +900,7 @@
         const parsed = JSON.parse(raw);
         const merged = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_STATE)), parsed);
         if (!merged.airlabsApiKey) merged.airlabsApiKey = DEFAULT_AIRLABS_API_KEY;
+        if (!merged.finnhubApiKey) merged.finnhubApiKey = DEFAULT_FINNHUB_API_KEY;
         DEFAULT_WIDGETS.forEach(dw => {
           if (!merged.widgets.find(w => w.id === dw.id)) {
             merged.widgets.push(JSON.parse(JSON.stringify(dw)));
@@ -1047,11 +1074,14 @@
       state.currentPage = 1;
       state.hideAllTitles = false;
       state.financeTickerOnly = true;
-      state.newsTickerOnly = false;
+      state.newsTickerOnly = true;
+      state.countdownUpcomingOnly = true;
+      state.messageFontSize = 26;
+      state.messageTextColor = '#f43f5e';
       saveState();
       updateGlobalTitleTagUI();
       renderBoard();
-      showToast('✓ 已還原為預設 Bento 佈局');
+      showToast('✓ 已還原為預設 iPad Bento 佈局');
     }
 
     /* Timezone & Live Clock Helpers */
@@ -1076,11 +1106,24 @@
       const dayPct = Math.min(100, Math.max(0, Math.round(((h24 * 60 + minNum) / 1440) * 100)));
 
       const wkMap = { Sun: '星期日', Mon: '星期一', Tue: '星期二', Wed: '星期三', Thu: '星期四', Fri: '星期五', Sat: '星期六' };
+      let lunarStr = '';
+      try {
+        const lunarRaw = new Intl.DateTimeFormat('zh-Hant-u-ca-chinese', {
+          timeZone: 'Asia/Hong_Kong',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }).format(now);
+        lunarStr = lunarRaw.replace(/^.*?([甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥]年)/, '$1');
+      } catch (e) {
+        lunarStr = '農曆日期';
+      }
       return {
         hhmm: `${map.hour || '02'}:${map.minute || '20'}`,
         ampm: (map.dayPeriod || 'AM').toUpperCase(),
         sec: map.second || '00',
         dateStr: `${map.month}月${map.day}日 ${wkMap[map.weekday] || ''}`,
+        lunarStr,
         dayPct,
         h24
       };
@@ -1144,7 +1187,7 @@
       if (skyClass === 'sky-cloudy-day' || skyClass === 'sky-sunset') {
         return `
           <div class="sky-anim-layer">
-            <div class="sky-sun-orb" style="opacity:0.55"></div>
+            <div class="sky-sun-orb" style="opacity:0.42"></div>
             <div class="sky-cloud sky-cloud-1"></div>
             <div class="sky-cloud sky-cloud-2"></div>
             <div class="sky-cloud sky-cloud-3"></div>
@@ -1174,7 +1217,7 @@
         </div>`;
     }
 
-    /* Weather SVG Spline Trend Line Builder */
+    /* Weather SVG Spline Trend Line Builder inside Translucent Glass Container */
     function buildWeatherSplineChart(forecast) {
       const items = (forecast && forecast.length) ? forecast.slice(0, 5) : liveData.weather.forecast;
       const allMax = items.map(d => d.max);
@@ -1186,7 +1229,7 @@
       const pts = items.map((d, idx) => {
         const x = 10 + idx * 20;
         const norm = (d.max - lo) / span;
-        const y = 62 - norm * 36;
+        const y = 60 - norm * 34;
         return { x, y, max: d.max, min: d.min, day: d.day, icon: d.icon };
       });
 
@@ -1200,7 +1243,7 @@
 
       const gradId = 'wxGrad_' + Math.random().toString(36).slice(2, 7);
       const nodesHtml = pts.map(p => {
-        const topPct = (p.y / 88) * 100;
+        const topPct = (p.y / 86) * 100;
         return `
           <div class="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none" style="left:${p.x}%; top:${topPct.toFixed(1)}%;">
             <span class="fs-2xs font-black text-white drop-shadow mb-1.5 leading-none">${p.max}°C</span>
@@ -1211,18 +1254,22 @@
       }).join('');
 
       return `
-        <div class="w-full flex flex-col justify-end mt-auto pt-1">
+        <div class="w-full flex flex-col justify-end px-2.5 pt-2.5 pb-1.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15">
           <div class="grid grid-cols-5 text-center mb-1">
-            ${items.map(d => `
-              <div class="flex flex-col items-center gap-1">
-                <span class="fs-2xs font-black text-white/95 tracking-tight">${escapeHtml(d.day)}</span>
-                <i class="fa-solid ${escapeHtml(d.icon)} fs-md text-sky-200 wx-icon-float drop-shadow"></i>
-              </div>
-            `).join('')}
+            ${items.map(d => {
+              const isSunny = d.icon === 'fa-sun';
+              const iconColor = isSunny ? 'text-amber-300' : 'text-white/95';
+              return `
+                <div class="flex flex-col items-center gap-1">
+                  <span class="fs-2xs font-black text-white/95 tracking-tight">${escapeHtml(d.day)}</span>
+                  <i class="fa-solid ${escapeHtml(d.icon)} fs-md ${iconColor} wx-icon-float drop-shadow"></i>
+                </div>
+              `;
+            }).join('')}
           </div>
 
-          <div class="relative w-full h-[86px] sm:h-[96px]">
-            <svg viewBox="0 0 100 88" preserveAspectRatio="none" class="w-full h-full overflow-visible">
+          <div class="relative w-full h-[82px] sm:h-[90px]">
+            <svg viewBox="0 0 100 86" preserveAspectRatio="none" class="w-full h-full overflow-visible">
               <defs>
                 <linearGradient id="${gradId}" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stop-color="#f97316" />
@@ -1272,7 +1319,11 @@
         let customCardStyle = gridStyle;
         if (w.id === 'message') {
           if (state.messageBgColor) customCardStyle += ` background: ${state.messageBgColor};`;
-          if (state.messageTextColor) customCardStyle += ` color: ${state.messageTextColor};`;
+          const isDarkActive = document.documentElement.classList.contains('dark');
+          const resolvedMsgColor = (isDarkActive && state.messageTextColor === '#f43f5e')
+            ? '#fb7185'
+            : state.messageTextColor;
+          if (resolvedMsgColor) customCardStyle += ` color: ${resolvedMsgColor};`;
         }
 
         const editToolbar = state.editMode ? `
@@ -1321,11 +1372,9 @@
         const hk = getHKTimeParts();
         return `
           <div class="flex flex-col justify-between h-full">
-            <div class="flex items-center gap-1.5 fs-xs font-extrabold text-white/95">
-              <i class="fa-solid fa-location-dot text-sky-300"></i>
-              <span>香港 ·</span>
-              <i class="fa-solid ${escapeHtml(liveData.weather.icon)} text-amber-300"></i>
-              <span>${liveData.weather.temp}° 多雲</span>
+            <div class="flex items-center justify-between gap-1.5 fs-xs font-extrabold text-white/95">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-sky-300"></i> 香港</span>
+              <span id="hkLunarLabel" class="px-2 py-0.5 rounded-full bg-white/15 backdrop-blur-sm fs-2xs font-black text-amber-200 tracking-wide">${escapeHtml(hk.lunarStr)}</span>
             </div>
 
             <div class="my-auto flex items-baseline justify-center gap-2 py-1">
@@ -1353,11 +1402,15 @@
         const latestMsg = (state.familyMessages && state.familyMessages.length)
           ? state.familyMessages[0].text
           : 'Testing 測試';
-        const fontSizePx = state.messageFontSize || 20;
-        const textStyle = `font-size: ${fontSizePx}px; line-height: 1.3;${state.messageTextColor ? ` color: ${state.messageTextColor};` : ''}`;
+        const isDarkActive = document.documentElement.classList.contains('dark');
+        const resolvedMsgColor = (isDarkActive && state.messageTextColor === '#f43f5e')
+          ? '#fb7185'
+          : state.messageTextColor;
+        const fontSizePx = Math.min(26, Number(state.messageFontSize) || 22);
+        const textStyle = `font-size: ${fontSizePx}px; line-height: 1.32;${resolvedMsgColor ? ` color: ${resolvedMsgColor};` : ''}`;
 
         return `
-          <div class="flex flex-col justify-between h-full gap-2">
+          <div class="flex flex-col justify-between h-full gap-1.5">
             ${showTitle ? `
               <div class="flex items-center justify-between gap-1 shrink-0">
                 <span class="fs-xs font-black opacity-85 flex items-center gap-1.5"><i class="fa-solid fa-note-sticky text-amber-400"></i> 家庭留言板</span>
@@ -1366,22 +1419,24 @@
                 </button>
               </div>
             ` : `
-              <div class="flex items-center justify-center shrink-0">
-                <button onclick="syncFamilyMessageSheet(true)" class="w-6 h-6 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[11px] hover:rotate-180 transition duration-500" title="同步留言板">
+              <div class="flex items-center justify-end shrink-0 -mb-1">
+                <button onclick="syncFamilyMessageSheet(true)" class="w-5 h-5 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[10px] opacity-75 hover:opacity-100 hover:rotate-180 transition duration-500" title="同步留言板">
                   <i class="fa-solid fa-rotate text-amber-400"></i>
                 </button>
               </div>
             `}
 
             <div class="card-inner-scroll flex items-center justify-center">
-              <div class="w-full px-3 py-2.5 rounded-2xl bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 text-center font-black break-words" style="${textStyle}">
+              <div class="w-full h-full px-3 py-2 rounded-2xl bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 flex items-center justify-center text-center font-black break-words" style="${textStyle}">
                 ${escapeHtml(latestMsg)}
               </div>
             </div>
 
-            <form onsubmit="addFamilyMessage(event)" class="flex items-center gap-1.5 shrink-0">
-              <input id="quickMsgInput" type="text" placeholder="寫低留言畀屋企..." class="min-w-0 flex-1 px-2.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 text-xs font-bold focus:outline-none" />
-              <button type="submit" class="px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shrink-0 active:scale-95 transition">發送</button>
+            <form onsubmit="addFamilyMessage(event)" class="flex items-center gap-1 px-2 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 shrink-0">
+              <input id="quickMsgInput" type="text" placeholder="留言畀屋企..." class="min-w-0 flex-1 bg-transparent px-1.5 py-0.5 text-[11px] font-bold focus:outline-none" />
+              <button type="submit" class="w-6 h-6 rounded-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-[11px] flex items-center justify-center shrink-0 active:scale-95 transition" title="發送留言">
+                <i class="fa-solid fa-paper-plane text-[10px]"></i>
+              </button>
             </form>
           </div>
         `;
@@ -1389,37 +1444,113 @@
 
       if (w.id === 'weather') {
         const wx = liveData.weather;
+        const hk = getHKTimeParts();
+        const isNight = hk.h24 >= 19 || hk.h24 < 6;
         const uvBars = ['#22c55e', '#eab308', '#f97316', '#ef4444', '#a855f7'];
-        const activeUvIdx = Math.min(4, Math.max(0, Math.floor((wx.uv || 5) / 2.5)));
+        const uvVal = Number(wx.uv) || 3;
+        const activeUvIdx = Math.min(4, Math.max(0, Math.floor(uvVal / 2.5)));
+        const uvLevelLabel = uvVal <= 2 ? '低' : (uvVal <= 5 ? '中等' : (uvVal <= 7 ? '高' : '甚高'));
+
+        const effectiveMax = Math.max(Number(wx.temp) || 0, Number(wx.max) || 0);
+        const effectiveMin = Math.min(Number(wx.temp) || 99, Number(wx.min) || 0);
+        const tempSpread = Math.max(0, effectiveMax - effectiveMin);
+
+        const descStr = String(wx.desc || '');
+        let mainWxIcon = wx.icon || 'fa-cloud';
+        let mainWxColor = 'text-white';
+        let shortConditionLabel = '大致多雲';
+
+        if (descStr.includes('雷') || descStr.includes('暴')) {
+          mainWxIcon = 'fa-cloud-bolt';
+          mainWxColor = 'text-white';
+          shortConditionLabel = '雷暴驟雨';
+        } else if (descStr.includes('雪') || descStr.includes('霜')) {
+          mainWxIcon = 'fa-snowflake';
+          mainWxColor = 'text-sky-100';
+          shortConditionLabel = '寒冷有霜';
+        } else if (descStr.includes('大雨') || descStr.includes('驟雨')) {
+          mainWxIcon = 'fa-cloud-showers-heavy';
+          mainWxColor = 'text-white';
+          shortConditionLabel = '間有驟雨';
+        } else if (descStr.includes('雨')) {
+          mainWxIcon = 'fa-cloud-rain';
+          mainWxColor = 'text-white';
+          shortConditionLabel = '有幾陣雨';
+        } else if (descStr.includes('陽光') || descStr.includes('晴間')) {
+          mainWxIcon = isNight ? 'fa-cloud-moon' : 'fa-cloud-sun';
+          mainWxColor = 'text-white';
+          shortConditionLabel = isNight ? '大致多雲' : '晴間多雲';
+        } else if (descStr.includes('晴')) {
+          mainWxIcon = isNight ? 'fa-moon' : 'fa-sun';
+          mainWxColor = 'text-white';
+          shortConditionLabel = isNight ? '天色清朗' : '天晴乾燥';
+        } else {
+          mainWxIcon = isNight ? 'fa-cloud-moon' : 'fa-cloud';
+          mainWxColor = 'text-white';
+          shortConditionLabel = '大致多雲';
+        }
+
+        const warningsList = Array.isArray(wx.warnings) ? wx.warnings : [];
+        const warningBadgesHtml = warningsList.length ? `
+          <div class="flex items-center gap-1 flex-wrap mt-1">
+            ${warningsList.map(wn => `
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black shadow-sm flex items-center gap-1 ${escapeHtml(wn.badgeClass)}">
+                <i class="fa-solid ${escapeHtml(wn.icon)}"></i>
+                <span>${escapeHtml(wn.label)}</span>
+              </span>
+            `).join('')}
+          </div>
+        ` : '';
+
         return `
-          <div class="flex flex-col justify-between h-full">
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex items-center gap-3 min-w-0">
+          <div class="flex flex-col justify-between h-full gap-2">
+            <!-- Top Row: Hero Temp + District & 2-Line Description + Right Weather Status Badge -->
+            <div class="flex items-start justify-between gap-2.5">
+              <div class="flex items-start gap-3 min-w-0 flex-1">
                 <span class="hero-temp-num text-white drop-shadow shrink-0">${wx.temp}°</span>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="cycleWeatherDistrict()" class="fs-lg font-black text-white flex items-center gap-1 hover:opacity-85">
+                <div class="min-w-0 flex-1 pt-0.5">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <button onclick="cycleWeatherDistrict()" class="fs-lg font-black text-white flex items-center gap-1.5 px-2 py-0.5 -ml-2 rounded-xl hover:bg-white/10 active:scale-95 transition">
                       <span>${escapeHtml(state.weatherDistrict)}</span>
-                      <i class="fa-solid fa-sort text-[11px] opacity-75"></i>
+                      <i class="fa-solid fa-sort text-[11px] opacity-80"></i>
                     </button>
-                    <span class="fs-xs font-extrabold text-white/85 flex items-center gap-1">
-                      <i class="fa-solid fa-location-arrow text-[10px]"></i>
-                      ${wx.max}°/${wx.min}°
+                    <span class="fs-xs font-black text-white/95 bg-white/12 px-2 py-0.5 rounded-full">
+                      最高 ${effectiveMax}° · 最低 ${effectiveMin}°
                     </span>
                   </div>
-                  <div class="fs-xs font-bold text-white/90 truncate">${escapeHtml(wx.desc)}</div>
-                  <div class="flex items-center gap-1.5 mt-1">
-                    <i class="fa-solid fa-sun text-amber-300 text-xs"></i>
-                    <span class="fs-2xs font-black text-white/90">紫外線 ${wx.uv}</span>
-                    <div class="flex items-center gap-1 ml-0.5">
-                      ${uvBars.map((col, idx) => `<span class="w-3.5 h-1.5 rounded-full" style="background:${col}; opacity:${idx <= activeUvIdx ? 1 : 0.28};"></span>`).join('')}
-                    </div>
+                  <div class="fs-xs font-bold text-white/90 line-clamp-2 leading-snug mt-1">${escapeHtml(wx.desc)}</div>
+                  ${warningBadgesHtml}
+                </div>
+              </div>
+
+              <div class="flex flex-col items-center justify-center shrink-0 bg-white/15 backdrop-blur-md border border-white/25 shadow-lg" style="padding: 0.55em 0.85em; border-radius: 1.1em;">
+                <i class="fa-solid ${escapeHtml(mainWxIcon)} fs-2xl ${mainWxColor} drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)] wx-icon-float leading-none"></i>
+                <span class="fs-2xs font-black text-white tracking-wide leading-none" style="margin-top: 0.45em;">${escapeHtml(shortConditionLabel)}</span>
+              </div>
+            </div>
+
+            <!-- Middle Row: Key Comfort Metric Pills -->
+            <div class="grid grid-cols-3 gap-2 my-auto">
+              <div class="px-2.5 py-1.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 flex items-center justify-between gap-1">
+                <span class="fs-2xs font-bold text-white/80 flex items-center gap-1"><i class="fa-solid fa-droplet text-sky-200"></i> 濕度</span>
+                <span class="fs-xs font-black text-white">${wx.humidity || '--'}%</span>
+              </div>
+              <div class="px-2.5 py-1.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 flex items-center justify-between gap-1">
+                <span class="fs-2xs font-bold text-white/80 flex items-center gap-1"><i class="fa-solid fa-sun text-amber-300"></i> 紫外線</span>
+                <div class="flex items-center gap-1">
+                  <span class="fs-xs font-black text-white">${uvVal} ${uvLevelLabel}</span>
+                  <div class="hidden sm:flex items-center gap-0.5">
+                    ${uvBars.map((col, idx) => `<span class="w-1.5 h-1.5 rounded-full" style="background:${col}; opacity:${idx <= activeUvIdx ? 1 : 0.25};"></span>`).join('')}
                   </div>
                 </div>
               </div>
-              <i class="fa-solid ${escapeHtml(wx.icon)} text-4xl sm:text-5xl text-amber-300 drop-shadow-lg wx-icon-float shrink-0"></i>
+              <div class="px-2.5 py-1.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 flex items-center justify-between gap-1">
+                <span class="fs-2xs font-bold text-white/80 flex items-center gap-1"><i class="fa-solid fa-temperature-half text-orange-200"></i> 今日溫差</span>
+                <span class="fs-xs font-black text-white">${tempSpread}°C</span>
+              </div>
             </div>
 
+            <!-- Bottom Row: 5-Day Forecast inside Translucent Glass Container -->
             ${buildWeatherSplineChart(wx.forecast)}
           </div>
         `;
@@ -1537,7 +1668,7 @@
         const aq = liveData.aqhi;
         return `
           <div class="flex flex-col justify-between h-full">
-            ${showTitle ? `<div class="fs-xs font-black flex items-center gap-1.5 text-sky-400"><i class="fa-solid fa-wind"></i> 空氣質素 AQHI</div>` : ''}
+            ${showTitle ? `<div class="fs-xs font-black flex items-center gap-1.5 text-emerald-500"><i class="fa-solid fa-wind"></i> 空氣質素 AQHI</div>` : ''}
             <div class="flex items-center justify-between gap-2 my-auto">
               <div>
                 <div class="text-2xl sm:text-3xl font-black text-emerald-400 leading-none">${aq.val} · ${escapeHtml(aq.level)}</div>
@@ -1573,68 +1704,96 @@
               </div>
             ` : ''}
 
-            <div class="my-auto px-3 py-2 rounded-2xl bg-black/10 dark:bg-black/35 border border-black/5 dark:border-white/5 marquee-wrap">
-              <div class="marquee-track fs-sm font-black">
-                <span>${tickerHtml}</span>
-                <span>${tickerHtml}</span>
+            ${state.financeTickerOnly ? `
+              <div class="my-auto px-3 py-3 rounded-2xl bg-black/10 dark:bg-black/45 border border-black/5 dark:border-white/5 marquee-wrap">
+                <div class="marquee-track fs-lg font-black">
+                  <span>${tickerHtml}</span>
+                  <span>${tickerHtml}</span>
+                </div>
               </div>
-            </div>
-
-            ${!state.financeTickerOnly ? `
-              <div class="card-inner-scroll grid grid-cols-2 gap-1.5 pt-0.5">
+            ` : `
+              <div class="px-3 py-1.5 rounded-2xl bg-black/10 dark:bg-black/45 border border-black/5 dark:border-white/5 marquee-wrap shrink-0">
+                <div class="marquee-track fs-sm font-black">
+                  <span>${tickerHtml}</span>
+                  <span>${tickerHtml}</span>
+                </div>
+              </div>
+              <div class="card-inner-scroll space-y-1 pt-0.5">
                 ${selectedTickers.map(t => `
-                  <div class="px-2.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-between gap-1">
+                  <div class="px-2.5 py-1 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-between gap-1.5">
                     <span class="fs-2xs font-black truncate">${t.icon} ${t.symbol}</span>
-                    <div class="text-right shrink-0">
-                      <div class="fs-2xs font-black leading-tight">${t.price}</div>
-                      <div class="text-[9px] font-bold ${t.up ? 'text-emerald-400' : 'text-rose-400'} leading-tight">${t.change}</div>
-                    </div>
+                    <span class="fs-2xs font-black tabular-nums ${t.up ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'} shrink-0">${t.price} ${t.change}</span>
                   </div>
                 `).join('')}
               </div>
-            ` : ''}
+            `}
           </div>
         `;
       }
 
       if (w.id === 'todo') {
+        const normSev = val => String(val || '').replace(/\uFE0F/g, '').trim();
+        const activeDue = state.todoFilterDue || 'today';
+        const activeSev = state.todoFilterSeverity || 'all';
+        const activeOwner = state.todoFilterOwner || 'all';
+
         const filtered = state.todos.filter(t => {
-          if (state.todoFilterDue === 'today' && t.dueType !== 'today') return false;
-          if (state.todoFilterDue === 'week' && t.dueType !== 'today' && t.dueType !== 'week') return false;
-          if (state.todoFilterSeverity !== 'all' && t.severity !== state.todoFilterSeverity) return false;
-          if (state.todoFilterOwner !== 'all' && (t.owner || '') !== state.todoFilterOwner) return false;
+          const dueCat = classifyDueDate(t.dueRaw || t.due);
+          if (activeDue === 'today' && dueCat !== 'today') return false;
+          if (activeDue === 'overdue' && dueCat !== 'overdue') return false;
+          if (activeDue === 'week' && dueCat !== 'today' && dueCat !== 'week') return false;
+
+          if (activeSev !== 'all') {
+            if (normSev(t.severity) !== normSev(activeSev)) return false;
+          }
+
+          if (activeOwner !== 'all') {
+            const ownerTokens = String(t.owner || '').split(/[,，/、&]+/).map(s => s.trim()).filter(Boolean);
+            if (!ownerTokens.includes(activeOwner) && String(t.owner || '').trim() !== activeOwner) return false;
+          }
+
           return true;
         });
+
+        const pendingTotal = state.todos.filter(t => !t.done).length;
 
         return `
           <div class="flex flex-col h-full gap-1.5">
             <div class="flex items-center justify-between gap-1 shrink-0">
-              ${showTitle ? `<span class="fs-xs font-black flex items-center gap-1.5"><i class="fa-solid fa-list-check text-emerald-400"></i> 屋企待辦清單</span>` : `<span></span>`}
-              <button onclick="syncGoogleSheetTodos(true)" class="w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-[11px] hover:rotate-180 transition duration-500" title="同步 Google Sheet">
-                <i class="fa-solid fa-rotate"></i>
-              </button>
+              ${showTitle ? `<span class="fs-xs font-black flex items-center gap-1.5 truncate"><i class="fa-solid fa-list-check text-emerald-500"></i> 待辦清單</span>` : `<span></span>`}
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="openWidgetSettings('todo', event)" class="w-6 h-6 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[10px] hover:scale-105 transition" title="篩選與新增任務">
+                  <i class="fa-solid fa-filter text-emerald-500"></i>
+                </button>
+                <button onclick="syncGoogleSheetTodos(true)" class="w-6 h-6 rounded-full bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-[11px] hover:rotate-180 transition duration-500" title="同步 Google Sheet">
+                  <i class="fa-solid fa-rotate"></i>
+                </button>
+              </div>
             </div>
 
-            <div class="card-inner-scroll space-y-1.5">
-              ${filtered.length ? filtered.map(item => `
-                <div onclick="toggleTodoItem('${item.id}')" class="px-2.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex items-center justify-between gap-2 cursor-pointer active:scale-[0.98] transition">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <span class="w-4 h-4 rounded-full border-2 ${item.done ? 'bg-emerald-500 border-emerald-500' : 'border-slate-400'} flex items-center justify-center text-[9px] text-white shrink-0">
-                      ${item.done ? '✓' : ''}
-                    </span>
-                    <span class="fs-xs font-black truncate ${item.done ? 'line-through opacity-50' : ''}">${escapeHtml(item.text)}</span>
+            <div class="card-inner-scroll space-y-1.5 flex flex-col">
+              ${filtered.length ? filtered.map(item => {
+                const shortDue = String(item.due || '').replace(/^\d{4}[-/年.]/, '');
+                const subMeta = [item.owner, shortDue].filter(Boolean).map(escapeHtml).join(' · ');
+                return `
+                <div onclick="toggleTodoItem('${item.id}')" class="px-2.5 py-2 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex items-center gap-2.5 cursor-pointer active:scale-[0.98] transition">
+                  <span class="w-4 h-4 rounded-full border-2 ${item.done ? 'bg-emerald-500 border-emerald-500' : 'border-slate-400'} flex items-center justify-center text-[9px] text-white shrink-0">
+                    ${item.done ? '✓' : ''}
+                  </span>
+                  <div class="min-w-0 flex-1">
+                    <div class="fs-xs font-black leading-snug break-words ${item.done ? 'line-through opacity-50' : ''}">${escapeHtml(item.text)}</div>
+                    ${subMeta ? `<div class="text-[10px] font-bold opacity-60 truncate mt-0.5">${subMeta}</div>` : ''}
                   </div>
-                  <span class="text-sm shrink-0">${escapeHtml(item.severity || '🟡')}</span>
                 </div>
-              `).join('') : `
-                <div class="text-center py-4 fs-2xs font-bold opacity-55">暫無符合條件的待辦事項</div>
+              `;
+              }).join('') : `
+                <div class="my-auto py-3 px-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/15 flex flex-col items-center justify-center text-center gap-1">
+                  <span class="text-xl">🎉</span>
+                  <div class="fs-xs font-black text-emerald-600 dark:text-emerald-300">${activeDue === 'today' && activeSev === 'all' && activeOwner === 'all' ? '今日任務全部清晒！' : '暫無符合條件的任務'}</div>
+                  <div class="fs-2xs font-bold opacity-65">待辦總庫存：${pendingTotal} 項</div>
+                </div>
               `}
             </div>
-
-            <form onsubmit="addQuickTodo(event)" class="flex items-center gap-1 shrink-0">
-              <input id="quickTodoInput" type="text" placeholder="新增任務..." class="min-w-0 flex-1 px-2.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 text-xs font-bold focus:outline-none" />
-              <button type="submit" class="w-7 h-7 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs flex items-center justify-center shrink-0">+</button>
-            </form>
           </div>
         `;
       }
@@ -1646,7 +1805,7 @@
         const statusLabel = fl.statusText || fl.remainText || '準時';
         const statusBadgeClass = isDelayed
           ? 'bg-rose-500/25 text-rose-400 border border-rose-500/30 animate-pulse'
-          : 'bg-emerald-500/20 text-emerald-400';
+          : 'bg-emerald-500/20 text-emerald-500 dark:text-emerald-400';
 
         return `
           <div class="flex flex-col justify-between h-full gap-2">
@@ -1654,7 +1813,7 @@
 
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-1.5 min-w-0">
-                <span class="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-400 fs-xs font-black shrink-0">${escapeHtml(fl.code)}</span>
+                <span class="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-500 dark:text-sky-400 fs-xs font-black shrink-0">${escapeHtml(fl.code)}</span>
                 <span class="fs-xs font-black truncate">${escapeHtml(fl.airline)}</span>
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
@@ -1693,7 +1852,7 @@
               </div>
               <div class="px-1.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/5">
                 <div class="text-[9px] opacity-60 font-bold">登機閘口</div>
-                <div class="fs-xs font-black text-amber-400 mt-0.5">${escapeHtml(fl.gate || '--')}</div>
+                <div class="fs-xs font-black text-amber-500 dark:text-amber-400 mt-0.5">${escapeHtml(fl.gate || '--')}</div>
               </div>
               <div class="px-1.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/5">
                 <div class="text-[9px] opacity-60 font-bold">轉盤 / 機型</div>
@@ -1701,7 +1860,7 @@
               </div>
               <div class="px-1.5 py-1.5 rounded-xl bg-black/5 dark:bg-white/5">
                 <div class="text-[9px] opacity-60 font-bold">飛行進度</div>
-                <div class="fs-2xs font-black truncate mt-0.5 ${isDelayed ? 'text-rose-400' : 'text-emerald-400'}">${escapeHtml(fl.remainText || `${pct}%`)}</div>
+                <div class="fs-2xs font-black truncate mt-0.5 ${isDelayed ? 'text-rose-400' : 'text-emerald-500 dark:text-emerald-400'}">${escapeHtml(fl.remainText || `${pct}%`)}</div>
               </div>
             </div>
           </div>
@@ -1804,6 +1963,112 @@
         `;
       }
 
+      if (w.id === 'countdown') {
+        const allItems = getAllCountdownItems();
+        const selectedIds = Array.isArray(state.selectedCountdownIds) ? state.selectedCountdownIds : [];
+        let displayList = allItems.filter(it => selectedIds.includes(it.id));
+        if (!displayList.length) displayList = allItems.slice(0, 3);
+
+        const enriched = displayList.map(it => {
+          const info = computeCountdownDays(it.date, it.repeatYearly);
+          return Object.assign({}, it, info);
+        }).sort((a, b) => a.daysLeft - b.daysLeft);
+
+        const upcomingOnly = !!state.countdownUpcomingOnly;
+        const heroItem = enriched[0];
+
+        if (upcomingOnly && heroItem) {
+          const isToday = heroItem.daysLeft === 0;
+          const isHoliday = heroItem.category === 'holiday';
+          const accentGrad = isToday
+            ? 'from-rose-500/25 via-amber-500/15 to-transparent border-rose-500/30'
+            : (isHoliday
+                ? 'from-amber-500/20 via-orange-500/10 to-transparent border-amber-500/25'
+                : 'from-indigo-500/20 via-purple-500/10 to-transparent border-indigo-500/25');
+
+          return `
+            <div class="flex flex-col justify-between h-full gap-1">
+              <div class="flex items-center justify-between gap-1 shrink-0">
+                ${showTitle ? `<span class="fs-xs font-black flex items-center gap-1.5 truncate"><i class="fa-solid fa-heart text-rose-500"></i> 倒數日</span>` : `<span></span>`}
+                <div class="flex items-center gap-1 shrink-0">
+                  <button onclick="openWidgetSettings('countdown', event)" class="w-6 h-6 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[10px] hover:scale-105 transition" title="選擇顯示紀念日">
+                    <i class="fa-solid fa-list-check text-rose-500"></i>
+                  </button>
+                  <button onclick="syncAnniversarySheet(true)" class="w-6 h-6 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center text-[10px] hover:rotate-180 transition duration-500" title="同步紀念日工作表">
+                    <i class="fa-solid fa-rotate"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex-1 min-h-0 rounded-2xl bg-gradient-to-br ${accentGrad} border px-2.5 py-2 flex flex-col justify-between">
+                <div class="fs-xs font-black leading-tight line-clamp-2 break-words">${escapeHtml(heroItem.title)}</div>
+
+                <div class="my-auto flex items-baseline gap-1">
+                  ${isToday
+                    ? `<span class="fs-lg font-black text-rose-500 leading-none tracking-tight animate-pulse">就是今日！</span>`
+                    : `<span class="font-black tabular-nums leading-none tracking-tight ${isHoliday ? 'text-amber-500 dark:text-amber-300' : 'text-indigo-600 dark:text-indigo-300'}" style="font-size: clamp(1.65em, 3.2vw, 2.8em);">${heroItem.daysLeft}</span>
+                       <span class="fs-xs font-black opacity-75">日後</span>`
+                  }
+                </div>
+
+                <div class="pt-1 border-t border-black/5 dark:border-white/10 fs-2xs font-extrabold opacity-80 truncate">
+                  <i class="fa-regular fa-calendar mr-1"></i>${escapeHtml(heroItem.targetDateStr.replace(/^\d{4}年/, ''))} ${heroItem.weekdayStr ? `(${escapeHtml(heroItem.weekdayStr)})` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="flex flex-col h-full gap-1.5">
+            <div class="flex items-center justify-between gap-1 shrink-0">
+              ${showTitle ? `<span class="fs-xs font-black flex items-center gap-1.5"><i class="fa-solid fa-heart text-rose-500"></i> 重要紀念日 / 倒數</span>` : `<span></span>`}
+              <div class="flex items-center gap-1">
+                <button onclick="openWidgetSettings('countdown', event)" class="w-6 h-6 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-[10px] hover:scale-105 transition" title="選擇顯示紀念日">
+                  <i class="fa-solid fa-list-check text-rose-500"></i>
+                </button>
+                <button onclick="syncAnniversarySheet(true)" class="w-6 h-6 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center text-[10px] hover:rotate-180 transition duration-500" title="同步紀念日工作表">
+                  <i class="fa-solid fa-rotate"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="card-inner-scroll space-y-2">
+              ${enriched.map((item, idx) => {
+                const isToday = item.daysLeft === 0;
+                const isNextUp = idx === 0;
+                const isHoliday = item.category === 'holiday';
+                const rowHighlight = isNextUp
+                  ? 'bg-indigo-500/10 dark:bg-indigo-500/15 border-indigo-500/30 shadow-sm'
+                  : 'bg-black/5 dark:bg-white/5 border-black/5 dark:border-white/5';
+                const badgeBg = isToday
+                  ? 'bg-rose-500 text-white animate-pulse'
+                  : (isNextUp
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : (isHoliday ? 'bg-amber-500/20 text-amber-600 dark:text-amber-300' : 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-300'));
+                return `
+                  <div class="px-3 py-2 rounded-2xl ${rowHighlight} border flex items-center justify-between gap-2.5">
+                    <div class="min-w-0">
+                      <div class="fs-sm font-black truncate flex items-center gap-1.5">
+                        ${isNextUp ? `<span class="px-1.5 py-0.5 rounded-md bg-indigo-600 text-white text-[9px] font-black shrink-0">最近</span>` : ''}
+                        <span class="truncate">${escapeHtml(item.title)}</span>
+                      </div>
+                      <div class="fs-2xs font-bold opacity-65 mt-0.5">${escapeHtml(item.targetDateStr)} ${item.weekdayStr ? `(${escapeHtml(item.weekdayStr)})` : ''}</div>
+                    </div>
+                    <div class="px-2.5 py-1 rounded-xl ${badgeBg} text-right shrink-0 tabular-nums">
+                      ${isToday
+                        ? `<span class="fs-xs font-black">就是今日！</span>`
+                        : `<span class="fs-md font-black">${item.daysLeft}</span><span class="text-[10px] font-bold ml-0.5">日</span>`
+                      }
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
       return '';
     }
 
@@ -1814,6 +2079,7 @@
       const aEl = document.getElementById('hkClockAmPm');
       const sEl = document.getElementById('hkClockSec');
       const dEl = document.getElementById('hkDateLabel');
+      const lEl = document.getElementById('hkLunarLabel');
       const bEl = document.getElementById('hkDayProgressBar');
       const pEl = document.getElementById('hkDayProgressLabel');
 
@@ -1821,6 +2087,7 @@
       if (aEl) aEl.textContent = hk.ampm;
       if (sEl) sEl.textContent = hk.sec;
       if (dEl) dEl.textContent = hk.dateStr;
+      if (lEl) lEl.textContent = hk.lunarStr;
       if (bEl) bEl.style.width = hk.dayPct + '%';
       if (pEl) pEl.textContent = `今日進度 ${hk.dayPct}%`;
 
@@ -1872,7 +2139,8 @@
 
     function addQuickTodo(e) {
       if (e) e.preventDefault();
-      const inp = document.getElementById('quickTodoInput');
+      const inp = document.getElementById('quickTodoInput') || document.getElementById('modalTodoInput');
+      const ownerSel = document.getElementById('modalTodoOwner');
       const val = inp ? inp.value.trim() : '';
       if (!val) return;
       state.todos.unshift({
@@ -1882,10 +2150,13 @@
         severity: '🟡',
         due: '今日',
         dueType: 'today',
-        owner: 'Miranda'
+        owner: ownerSel ? ownerSel.value : 'Miranda'
       });
       saveState();
       renderBoard();
+      if (!document.getElementById('settingsModal').classList.contains('hidden')) {
+        openWidgetSettings('todo');
+      }
       showToast('已新增待辦任務');
     }
 
@@ -2143,19 +2414,43 @@
           </div>
         `;
       } else if (id === 'todo') {
-        const owners = ['all', ...Array.from(new Set(state.todos.map(t => t.owner).filter(Boolean)))];
-        const severities = ['all', ...Array.from(new Set(state.todos.map(t => t.severity).filter(Boolean)))];
+        const ownerSet = new Set();
+        state.todos.forEach(t => {
+          String(t.owner || '').split(/[,，/、&]+/).map(s => s.trim()).filter(Boolean).forEach(o => ownerSet.add(o));
+        });
+        const owners = ['all', ...Array.from(ownerSet)];
+        const sevMap = new Map();
+        state.todos.forEach(t => {
+          const raw = String(t.severity || '').trim();
+          const norm = raw.replace(/\uFE0F/g, '');
+          if (norm && !sevMap.has(norm)) sevMap.set(norm, raw);
+        });
+        const severities = ['all', ...Array.from(sevMap.values())];
         extraHtml = `
           <div class="p-3 rounded-2xl bg-black/5 dark:bg-white/5 space-y-2.5">
-            <div class="font-black">到期日篩選</div>
+            <div class="font-black">+ 快速新增今日任務</div>
+            <form onsubmit="addQuickTodo(event)" class="flex items-center gap-1.5">
+              <input id="modalTodoInput" type="text" placeholder="輸入任務內容..." class="min-w-0 flex-1 px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs focus:outline-none" />
+              <select id="modalTodoOwner" class="px-2 py-2 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs">
+                <option value="Miranda">Miranda</option>
+                <option value="Angus">Angus</option>
+              </select>
+              <button type="submit" class="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs shrink-0">新增</button>
+            </form>
+
+            <div class="border-t border-black/10 dark:border-white/10 pt-2 font-black">到期日篩選</div>
             <select onchange="updateTodoFilter('todoFilterDue', this.value)" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 font-black">
               <option value="today" ${state.todoFilterDue === 'today' ? 'selected' : ''}>今日到期</option>
-              <option value="week" ${state.todoFilterDue === 'week' ? 'selected' : ''}>今個星期</option>
-              <option value="all" ${state.todoFilterDue === 'all' ? 'selected' : ''}>全部任務</option>
+              <option value="overdue" ${state.todoFilterDue === 'overdue' ? 'selected' : ''}>已逾期</option>
+              <option value="week" ${state.todoFilterDue === 'week' ? 'selected' : ''}>今個星期內</option>
+              <option value="all" ${state.todoFilterDue === 'all' ? 'selected' : ''}>全部任務 (${state.todos.length})</option>
             </select>
             <div class="font-black">嚴重程度篩選</div>
             <select onchange="updateTodoFilter('todoFilterSeverity', this.value)" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 font-black">
-              ${severities.map(s => `<option value="${escapeHtml(s)}" ${state.todoFilterSeverity === s ? 'selected' : ''}>${s === 'all' ? '全部程度' : escapeHtml(s)}</option>`).join('')}
+              ${severities.map(s => {
+                const isSelected = String(state.todoFilterSeverity || '').replace(/\uFE0F/g, '') === String(s).replace(/\uFE0F/g, '');
+                return `<option value="${escapeHtml(s)}" ${isSelected ? 'selected' : ''}>${s === 'all' ? '全部程度' : escapeHtml(s)}</option>`;
+              }).join('')}
             </select>
             <div class="font-black">負責人篩選</div>
             <select onchange="updateTodoFilter('todoFilterOwner', this.value)" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 font-black">
@@ -2204,6 +2499,68 @@
             <div class="flex items-center justify-between text-[11px] opacity-75 pt-1">
               <span>資料來源：RTHK 香港電台即時新聞（每 10 分鐘自動更新）</span>
               <button onclick="fetchRthkNewsLive(true)" class="px-2.5 py-1 rounded-lg bg-rose-500/15 text-rose-500 font-black">立即更新</button>
+            </div>
+          </div>
+        `;
+      } else if (id === 'countdown') {
+        const allItems = getAllCountdownItems();
+        const selectedIds = Array.isArray(state.selectedCountdownIds) ? state.selectedCountdownIds : [];
+        const customItems = allItems.filter(it => it.category !== 'holiday');
+        const holidayItems = allItems.filter(it => it.category === 'holiday');
+
+        extraHtml = `
+          <div class="p-3 rounded-2xl bg-black/5 dark:bg-white/5 space-y-2.5">
+            <label class="flex items-center justify-between font-black cursor-pointer p-2 rounded-xl bg-white/80 dark:bg-zinc-800">
+              <span>只顯示最近 1 個 Upcoming 日子（焦點大字模式）</span>
+              <input type="checkbox" ${state.countdownUpcomingOnly ? 'checked' : ''} onchange="state.countdownUpcomingOnly=this.checked; saveState(); renderBoard();" />
+            </label>
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-black">Google Sheet「紀念日」已連線</span>
+              <div class="flex items-center gap-1.5">
+                <a href="${escapeHtml(state.anniversarySheetUrl || state.googleSheetUrl)}" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 font-black text-[11px]">↗ 開啟試算表</a>
+                <button onclick="syncAnniversarySheet(true)" class="px-2.5 py-1 rounded-lg bg-rose-500/15 text-rose-500 font-black text-[11px]">立即同步</button>
+              </div>
+            </div>
+            <div class="text-[11px] opacity-75 leading-relaxed">
+              已自動連接您的共用試算表，並讀取名為 <code>紀念日</code> 的工作表分頁（<strong>第 1 欄：事件</strong>、<strong>第 2 欄：日子</strong>，如 <code>2026-12-18</code> 或 <code>12月18日</code>）。
+            </div>
+            <div class="grid grid-cols-3 gap-1.5">
+              <input type="text" value="${escapeHtml(state.anniversarySheetUrl || state.googleSheetUrl || '')}" onchange="state.anniversarySheetUrl=this.value.trim(); saveState(); syncAnniversarySheet(true);" class="col-span-2 px-2.5 py-1.5 rounded-xl bg-white dark:bg-zinc-800 text-[11px]" placeholder="Google Sheet 連結" />
+              <input type="text" value="${escapeHtml(state.anniversarySheetTab || '紀念日')}" onchange="state.anniversarySheetTab=this.value.trim()||'紀念日'; saveState(); syncAnniversarySheet(true);" class="px-2.5 py-1.5 rounded-xl bg-white dark:bg-zinc-800 font-black text-xs text-center" placeholder="分頁名稱" />
+            </div>
+
+            <div class="border-t border-black/10 dark:border-white/10 pt-2 space-y-1.5">
+              <div class="font-black">勾選要在卡片上顯示的項目（已選 ${selectedIds.length} 項）</div>
+
+              ${customItems.length ? `
+                <div class="text-[11px] font-black text-indigo-500 pt-1">❤️ 家庭紀念日（來自 Google Sheet）</div>
+                <div class="space-y-1 max-h-32 overflow-y-auto transit-scroll">
+                  ${customItems.map(it => {
+                    const info = computeCountdownDays(it.date, it.repeatYearly);
+                    return `
+                      <label class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-white/80 dark:bg-zinc-800 cursor-pointer">
+                        <span class="font-black text-xs truncate">${escapeHtml(it.title)} <span class="opacity-60 font-bold">(${escapeHtml(info.targetDateStr)} · 剩${info.daysLeft}日)</span></span>
+                        <input type="checkbox" ${selectedIds.includes(it.id) ? 'checked' : ''} onchange="toggleCountdownSelection('${escapeHtml(it.id)}', this.checked)" />
+                      </label>
+                    `;
+                  }).join('')}
+                </div>
+              ` : `
+                <div class="text-[11px] opacity-60 py-1">尚未從「紀念日」分頁讀取到自訂事件（同步後會自動出現於此）。</div>
+              `}
+
+              <div class="text-[11px] font-black text-amber-500 pt-1">🇭🇰 香港法定紅假與重要節日</div>
+              <div class="space-y-1 max-h-40 overflow-y-auto transit-scroll">
+                ${holidayItems.map(it => {
+                  const info = computeCountdownDays(it.date, it.repeatYearly);
+                  return `
+                    <label class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-white/80 dark:bg-zinc-800 cursor-pointer">
+                      <span class="font-black text-xs truncate">${escapeHtml(it.title)} <span class="opacity-60 font-bold">(${escapeHtml(info.targetDateStr)} · 剩${info.daysLeft}日)</span></span>
+                      <input type="checkbox" ${selectedIds.includes(it.id) ? 'checked' : ''} onchange="toggleCountdownSelection('${escapeHtml(it.id)}', this.checked)" />
+                    </label>
+                  `;
+                }).join('')}
+              </div>
             </div>
           </div>
         `;
@@ -2393,6 +2750,146 @@
       state[key] = val;
       saveState();
       renderBoard();
+      if (!document.getElementById('settingsModal').classList.contains('hidden')) {
+        openWidgetSettings('todo');
+      }
+    }
+
+    function getAllCountdownItems() {
+      const custom = Array.isArray(state.anniversaries) ? state.anniversaries : [];
+      return [...custom, ...HK_HOLIDAY_PRESETS];
+    }
+
+    function toggleCountdownSelection(id, checked) {
+      const set = new Set(Array.isArray(state.selectedCountdownIds) ? state.selectedCountdownIds : []);
+      if (checked) set.add(id);
+      else set.delete(id);
+      state.selectedCountdownIds = Array.from(set);
+      saveState();
+      renderBoard();
+      if (!document.getElementById('settingsModal').classList.contains('hidden')) {
+        openWidgetSettings('countdown');
+      }
+    }
+
+    function parseFlexibleDateParts(rawDate) {
+      const s = String(rawDate || '').trim();
+      if (!s) return null;
+      const gvizDate = s.match(/^Date\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
+      if (gvizDate) {
+        return { year: Number(gvizDate[1]), month: Number(gvizDate[2]) + 1, day: Number(gvizDate[3]), hasYear: true };
+      }
+      const ymd = s.match(/(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})/);
+      if (ymd) {
+        return { year: Number(ymd[1]), month: Number(ymd[2]), day: Number(ymd[3]), hasYear: true };
+      }
+      const mdZh = s.match(/(\d{1,2})月(\d{1,2})日?/);
+      if (mdZh) {
+        return { year: null, month: Number(mdZh[1]), day: Number(mdZh[2]), hasYear: false };
+      }
+      const dmOrMd = s.match(/^(\d{1,2})[-/.](\d{1,2})$/);
+      if (dmOrMd) {
+        const a = Number(dmOrMd[1]);
+        const b = Number(dmOrMd[2]);
+        if (a > 12) return { year: null, month: b, day: a, hasYear: false };
+        return { year: null, month: a, day: b, hasYear: false };
+      }
+      return null;
+    }
+
+    function computeCountdownDays(rawDate, repeatYearly = false) {
+      const now = new Date();
+      const hkNowParts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Hong_Kong',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(now).split('-').map(Number);
+      const todayUtc = Date.UTC(hkNowParts[0], hkNowParts[1] - 1, hkNowParts[2]);
+
+      const parts = parseFlexibleDateParts(rawDate);
+      if (!parts) {
+        return { daysLeft: 999, targetDateStr: String(rawDate || ''), weekdayStr: '' };
+      }
+
+      const isRecurring = repeatYearly || !parts.hasYear;
+      let targetYear = parts.year || hkNowParts[0];
+      let targetUtc = Date.UTC(targetYear, parts.month - 1, parts.day);
+
+      if (isRecurring && targetUtc < todayUtc) {
+        targetYear += 1;
+        targetUtc = Date.UTC(targetYear, parts.month - 1, parts.day);
+      }
+
+      const diffDays = Math.round((targetUtc - todayUtc) / 86400000);
+      const wkNames = ['日', '一', '二', '三', '四', '五', '六'];
+      const dtObj = new Date(targetUtc);
+      const weekdayStr = wkNames[dtObj.getUTCDay()] || '';
+      const targetDateStr = `${targetYear}年${parts.month}月${parts.day}日`;
+
+      return {
+        daysLeft: diffDays,
+        targetDateStr,
+        weekdayStr
+      };
+    }
+
+    async function syncAnniversarySheet(manual = false) {
+      const targetUrl = state.anniversarySheetUrl || state.googleSheetUrl || DEFAULT_SHARED_SHEET_URL;
+      const sheetId = extractSheetId(targetUrl);
+      if (!sheetId) return;
+      try {
+        const tabName = encodeURIComponent(state.anniversarySheetTab || DEFAULT_ANNIVERSARY_SHEET_TAB);
+        const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${tabName}&tqx=out:json`;
+        const res = await fetch(gvizUrl);
+        const text = await res.text();
+        const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+        const data = JSON.parse(jsonStr);
+        if (data.status === 'error') {
+          throw new Error('Tab not found');
+        }
+        const rows = (data.table && data.table.rows) || [];
+
+        const parsedList = [];
+        rows.forEach((r, idx) => {
+          const cells = r.c || [];
+          const eventVal = cells[0] && (cells[0].f || cells[0].v);
+          const dateVal = cells[1] && (cells[1].f || cells[1].v);
+          if (!eventVal || !dateVal) return;
+          const evStr = String(eventVal).trim();
+          const dtStr = String(dateVal).trim();
+          if (evStr === '事件' || evStr === '紀念日' || dtStr === '日子' || dtStr === '日期') return;
+
+          const parsedParts = parseFlexibleDateParts(dtStr);
+          parsedList.push({
+            id: 'anniv_' + idx + '_' + evStr.slice(0, 8),
+            title: evStr,
+            date: dtStr,
+            category: 'custom',
+            repeatYearly: parsedParts ? !parsedParts.hasYear : false
+          });
+        });
+
+        if (parsedList.length) {
+          const prevIds = new Set((state.anniversaries || []).map(a => a.id));
+          state.anniversaries = parsedList;
+          const sel = new Set(Array.isArray(state.selectedCountdownIds) ? state.selectedCountdownIds : []);
+          parsedList.forEach(item => {
+            if (!prevIds.has(item.id)) sel.add(item.id);
+          });
+          state.selectedCountdownIds = Array.from(sel);
+          saveState();
+          renderBoard();
+          if (!document.getElementById('settingsModal').classList.contains('hidden')) {
+            openWidgetSettings('countdown');
+          }
+          if (manual) showToast(`✓ 已從「${state.anniversarySheetTab || '紀念日'}」同步 ${parsedList.length} 個紀念日`);
+        } else if (manual) {
+          showToast(`已連線至「${state.anniversarySheetTab || '紀念日'}」分頁（暫未有資料列）`);
+        }
+      } catch (e) {
+        if (manual) showToast('請在試算表新增「紀念日」分頁並設為知道連結者可檢視');
+      }
     }
 
     function updateFlightField(key, val) {
@@ -2416,7 +2913,6 @@
       const keepPerson = state.flights[0].personEmoji || '👩🏻‍🦱';
       const prefix = code.replace(/[0-9]/g, '');
 
-      // Immediately clear stale route/gate info so the widget reflects the newly entered flight number
       state.flights[0] = {
         id: 'fl1',
         code,
@@ -2534,7 +3030,6 @@
       busLookupCandidates = [];
 
       try {
-        // 1. Query KMB Route Variants (O / I)
         const kmbRoutesJson = await fetchJsonWithCorsFallback('https://data.etabus.gov.hk/v1/transport/kmb/route/');
         if (kmbRoutesJson && Array.isArray(kmbRoutesJson.data)) {
           const matches = kmbRoutesJson.data.filter(r => r.route === route);
@@ -2553,7 +3048,6 @@
           });
         }
 
-        // 2. Query Citybus (CTB) Route Variants
         const ctbRouteJson = await fetchJsonWithCorsFallback(`https://rt.data.gov.hk/v2/transport/citybus/route/CTB/${encodeURIComponent(route)}`);
         if (ctbRouteJson && ctbRouteJson.data && (ctbRouteJson.data.orig_tc || ctbRouteJson.data.dest_tc)) {
           const d = ctbRouteJson.data;
@@ -2843,7 +3337,6 @@
       const mm = String(Math.floor(remainSec / 60)).padStart(2, '0');
       const ss = String(remainSec % 60).padStart(2, '0');
 
-      // Background color strictly follows remainSec (10:00+ Green, 5:00-9:59 Orange, 0:00-4:59 Red)
       if (remainSec >= 600) {
         modal.style.background = 'linear-gradient(155deg, #065f46 0%, #059669 55%, #10b981 100%)';
       } else if (remainSec >= 300) {
@@ -2894,7 +3387,6 @@
         statusSubEl.textContent = '仲趕得切，唔使急';
       }
 
-      // Show "追上一班" only when an earlier un-departed train exists in the live list
       const validUnDeparted = getValidTransitTrains(item, nowMs).filter(t => t.depTs > nowMs);
       const hasPrevUnDeparted = validUnDeparted.some(t => t.depTs < chaseRadarState.lockedDepTs);
       const prevBtn = document.getElementById('radarPrevBtn');
@@ -3051,7 +3543,7 @@
       }
     }
 
-    /* Live Data Fetchers (Google Sheets, Transit, Weather, RTHK News, AirLabs Real-Time Flights + Clock Progress Engine, US Stocks) */
+    /* Live Data Fetchers */
     function extractSheetId(url) {
       const m = String(url || '').match(/\/d\/([a-zA-Z0-9-_]+)/);
       return m ? m[1] : '';
@@ -3061,25 +3553,46 @@
       const s = String(rawDue || '').trim();
       if (!s) return 'other';
       if (s.includes('今日') || s.includes('今天')) return 'today';
+      if (s.includes('逾期')) return 'overdue';
       if (s.includes('今個星期') || s.includes('本週') || s.includes('明日') || s.includes('明天')) return 'week';
 
-      const now = new Date();
-      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const dayOfWeek = todayStart.getDay() === 0 ? 7 : todayStart.getDay();
-      const weekEnd = new Date(todayStart);
-      weekEnd.setDate(todayStart.getDate() + (7 - dayOfWeek));
+      const hkParts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Hong_Kong',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(new Date()).split('-').map(Number);
+      const todayUtc = Date.UTC(hkParts[0], hkParts[1] - 1, hkParts[2]);
+      const plus6DaysUtc = todayUtc + 6 * 86400000;
 
-      let parsed = null;
-      const ymd = s.match(/(\d{4})[-/年](\d{1,2})[-/月](\d{1,2})/);
-      const dm = s.match(/^(\d{1,2})\/(\d{1,2})$/);
-      const md = s.match(/(\d{1,2})月(\d{1,2})日/);
-      if (ymd) parsed = new Date(Number(ymd[1]), Number(ymd[2]) - 1, Number(ymd[3]));
-      else if (md) parsed = new Date(now.getFullYear(), Number(md[1]) - 1, Number(md[2]));
-      else if (dm) parsed = new Date(now.getFullYear(), Number(dm[2]) - 1, Number(dm[1]));
+      let parsedUtc = null;
+      const gvizDate = s.match(/^Date\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
+      const ymd = s.match(/^(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})/);
+      const dmy = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
+      const dm = s.match(/^(\d{1,2})[-/.](\d{1,2})$/);
+      const md = s.match(/(\d{1,2})月(\d{1,2})日?/);
 
-      if (parsed && !isNaN(parsed.getTime())) {
-        if (parsed.getTime() === todayStart.getTime()) return 'today';
-        if (parsed >= todayStart && parsed <= weekEnd) return 'week';
+      if (gvizDate) {
+        parsedUtc = Date.UTC(Number(gvizDate[1]), Number(gvizDate[2]), Number(gvizDate[3]));
+      } else if (ymd) {
+        parsedUtc = Date.UTC(Number(ymd[1]), Number(ymd[2]) - 1, Number(ymd[3]));
+      } else if (dmy) {
+        const a = Number(dmy[1]);
+        const b = Number(dmy[2]);
+        const yr = Number(dmy[3]);
+        parsedUtc = a > 12 ? Date.UTC(yr, b - 1, a) : Date.UTC(yr, a - 1, b);
+      } else if (md) {
+        parsedUtc = Date.UTC(hkParts[0], Number(md[1]) - 1, Number(md[2]));
+      } else if (dm) {
+        const a = Number(dm[1]);
+        const b = Number(dm[2]);
+        parsedUtc = a > 12 ? Date.UTC(hkParts[0], b - 1, a) : Date.UTC(hkParts[0], a - 1, b);
+      }
+
+      if (parsedUtc !== null && !isNaN(parsedUtc)) {
+        if (parsedUtc === todayUtc) return 'today';
+        if (parsedUtc < todayUtc) return 'overdue';
+        if (parsedUtc > todayUtc && parsedUtc <= plus6DaysUtc) return 'week';
       }
       return 'other';
     }
@@ -3095,29 +3608,90 @@
         const data = JSON.parse(jsonStr);
         const cols = (data.table.cols || []).map(c => (c.label || '').trim());
         const rows = data.table.rows || [];
+        if (!rows.length) return;
 
-        const taskIdx = Math.max(0, cols.findIndex(c => c.includes('任務') || c.toLowerCase().includes('task')));
-        const sevIdx = cols.findIndex(c => c.includes('嚴重') || c.includes('程度'));
-        const dueIdx = cols.findIndex(c => c.includes('到期') || c.includes('日期'));
-        const ownerIdx = cols.findIndex(c => c.includes('負責') || c.includes('人'));
+        const firstRowVals = rows[0] && rows[0].c ? rows[0].c.map(cell => String((cell && (cell.f || cell.v)) || '').trim()) : [];
+        const hasHeaderInRow0 = firstRowVals.some(v => ['任務', '事項', '嚴重', '程度', '到期', '日期', '負責'].some(k => v.includes(k)));
+        const headerTexts = cols.some(Boolean) ? cols : (hasHeaderInRow0 ? firstRowVals : []);
+        const startRowIdx = (!cols.some(Boolean) && hasHeaderInRow0) ? 1 : 0;
+        const dataRows = rows.slice(startRowIdx);
+
+        const findColByHeader = keywords => headerTexts.findIndex(h => keywords.some(k => h.toLowerCase().includes(k)));
+        let taskIdx = findColByHeader(['任務', '事項', 'task', 'todo', '內容']);
+        let sevIdx = findColByHeader(['嚴重', '程度', '優先', 'priority', 'severity']);
+        let dueIdx = findColByHeader(['到期', '日期', 'deadline', 'due', 'date']);
+        let ownerIdx = findColByHeader(['負責', '人', 'owner', 'who']);
+
+        const colCount = Math.max(cols.length, firstRowVals.length);
+        const sampleRows = dataRows.slice(0, 12);
+        const isDateLike = v => Boolean(parseFlexibleDateParts(v) || /今日|今天|明日|明天|星期|本週/.test(v));
+        const isSevLike = v => /[🔴🟡🟢⚠️⚠❗🔥]|^(高|中|低|緊急|重要|一般)$/.test(v.trim());
+        const isBoolLike = v => /^(true|false|✓|✔|☑|☐|完成|未完成)$/i.test(v.trim());
+
+        if (dueIdx < 0) {
+          for (let c = 0; c < colCount; c++) {
+            const vals = sampleRows.map(r => String((r.c && r.c[c] && (r.c[c].f || r.c[c].v)) || '').trim()).filter(Boolean);
+            if (vals.length && vals.filter(isDateLike).length / vals.length >= 0.4) {
+              dueIdx = c;
+              break;
+            }
+          }
+        }
+
+        if (sevIdx < 0) {
+          for (let c = 0; c < colCount; c++) {
+            if (c === dueIdx) continue;
+            const vals = sampleRows.map(r => String((r.c && r.c[c] && (r.c[c].f || r.c[c].v)) || '').trim()).filter(Boolean);
+            if (vals.length && vals.filter(isSevLike).length / vals.length >= 0.4) {
+              sevIdx = c;
+              break;
+            }
+          }
+        }
+
+        const remainingCols = Array.from({ length: colCount }, (_, i) => i).filter(c => {
+          if (c === dueIdx || c === sevIdx) return false;
+          const vals = sampleRows.map(r => String((r.c && r.c[c] && (r.c[c].f || r.c[c].v)) || '').trim()).filter(Boolean);
+          if (!vals.length) return false;
+          if (vals.every(isBoolLike)) return false;
+          return true;
+        });
+
+        if (taskIdx < 0 && remainingCols.length) {
+          remainingCols.sort((a, b) => {
+            const avgA = sampleRows.reduce((s, r) => s + String((r.c && r.c[a] && (r.c[a].f || r.c[a].v)) || '').trim().length, 0);
+            const avgB = sampleRows.reduce((s, r) => s + String((r.c && r.c[b] && (r.c[b].f || r.c[b].v)) || '').trim().length, 0);
+            return avgB - avgA;
+          });
+          taskIdx = remainingCols[0];
+        }
+
+        if (ownerIdx < 0) {
+          const otherTextCols = remainingCols.filter(c => c !== taskIdx);
+          if (otherTextCols.length) ownerIdx = otherTextCols[0];
+        }
+
+        if (taskIdx < 0) taskIdx = 0;
 
         const parsedTodos = [];
-        rows.forEach((r, idx) => {
+        dataRows.forEach((r, idx) => {
           const cells = r.c || [];
           const taskVal = cells[taskIdx] && (cells[taskIdx].f || cells[taskIdx].v);
-          if (!taskVal || String(taskVal).trim() === '任務') return;
-          const sevVal = sevIdx >= 0 && cells[sevIdx] ? (cells[sevIdx].f || cells[sevIdx].v || '🟡') : '🟡';
-          const dueVal = dueIdx >= 0 && cells[dueIdx] ? (cells[dueIdx].f || cells[dueIdx].v || '') : '';
-          const ownerVal = ownerIdx >= 0 && cells[ownerIdx] ? (cells[ownerIdx].f || cells[ownerIdx].v || '') : '';
+          const taskStr = String(taskVal || '').trim();
+          if (!taskStr || taskStr === '任務' || taskStr === '事項') return;
+
+          const sevRaw = (sevIdx >= 0 && cells[sevIdx]) ? (cells[sevIdx].f || cells[sevIdx].v || '') : '';
+          const dueRaw = (dueIdx >= 0 && cells[dueIdx]) ? (cells[dueIdx].f || cells[dueIdx].v || '') : '';
+          const ownerRaw = (ownerIdx >= 0 && cells[ownerIdx]) ? (cells[ownerIdx].f || cells[ownerIdx].v || '') : '';
 
           parsedTodos.push({
             id: 'gs_' + idx,
-            text: String(taskVal).trim(),
+            text: taskStr,
             done: false,
-            severity: String(sevVal).trim(),
-            due: String(dueVal).trim(),
-            dueType: classifyDueDate(dueVal),
-            owner: String(ownerVal).trim()
+            severity: String(sevRaw || '🟡').trim(),
+            due: String(dueRaw || '').trim(),
+            dueType: classifyDueDate(dueRaw),
+            owner: String(ownerRaw || '').trim()
           });
         });
 
@@ -3125,6 +3699,9 @@
           state.todos = parsedTodos;
           saveState();
           renderBoard();
+          if (!document.getElementById('settingsModal').classList.contains('hidden')) {
+            openWidgetSettings('todo');
+          }
           if (manual) showToast(`已同步 ${parsedTodos.length} 項待辦`);
         }
       } catch (e) {
@@ -3240,7 +3817,6 @@
             const explicitStopId = item.stopId || (/^[0-9A-F]{6,16}$/i.test(String(item.sta || '')) ? item.sta : '');
             const svcType = item.serviceType || '1';
 
-            // 1. Direct KMB Stop ETA when official stopId was chosen from dropdown
             if (explicitStopId && item.operator !== 'CTB') {
               const stopEtaJson = await fetchJsonWithCorsFallback(`https://data.etabus.gov.hk/v1/transport/kmb/eta/${encodeURIComponent(explicitStopId)}/${encodeURIComponent(cleanRoute)}/${encodeURIComponent(svcType)}`);
               if (stopEtaJson && Array.isArray(stopEtaJson.data)) {
@@ -3259,7 +3835,6 @@
               }
             }
 
-            // 2. Direct Citybus CTB v2 Stop ETA when official stopId was chosen from dropdown
             if (!parsedBusTrains.length && explicitStopId && item.operator !== 'KMB') {
               const ctbJson = await fetchJsonWithCorsFallback(`https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/${encodeURIComponent(explicitStopId)}/${encodeURIComponent(cleanRoute)}`);
               if (ctbJson && Array.isArray(ctbJson.data)) {
@@ -3278,7 +3853,6 @@
               }
             }
 
-            // 3. Fallback KMB Stop-Name matching for legacy manually entered routes
             if (!parsedBusTrains.length) {
               const matchedStopId = await resolveKmbStopIdByName(item.staName || item.sta);
               if (matchedStopId) {
@@ -3328,9 +3902,57 @@
           const dist = data.temperature.data.find(d => d.place.includes(state.weatherDistrict)) || data.temperature.data[0];
           if (dist) liveData.weather.temp = dist.value;
         }
+        if (data && data.humidity && data.humidity.data && data.humidity.data[0]) {
+          liveData.weather.humidity = data.humidity.data[0].value;
+        }
         if (data && data.uvindex && data.uvindex.data && data.uvindex.data[0]) {
           liveData.weather.uv = data.uvindex.data[0].value;
         }
+      } catch (e) {}
+
+      try {
+        const flwRes = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=tc');
+        const flwData = await flwRes.json();
+        if (flwData && (flwData.forecastDesc || flwData.generalSituation)) {
+          liveData.weather.desc = flwData.forecastDesc || flwData.generalSituation;
+        }
+      } catch (e) {}
+
+      try {
+        const warnRes = await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc');
+        const warnData = await warnRes.json();
+        const parsedWarnings = [];
+        if (warnData && typeof warnData === 'object') {
+          Object.values(warnData).forEach(w => {
+            if (!w || w.actionCode === 'CANCEL') return;
+            const code = String(w.code || '').toUpperCase();
+            const name = String(w.name || '');
+            if (code === 'WRAINA' || name.includes('黃色暴雨')) {
+              parsedWarnings.push({ label: '黃雨警告', icon: 'fa-cloud-rain', badgeClass: 'bg-amber-400 text-slate-950' });
+            } else if (code === 'WRAINR' || name.includes('紅色暴雨')) {
+              parsedWarnings.push({ label: '紅雨警告', icon: 'fa-cloud-showers-heavy', badgeClass: 'bg-rose-600 text-white' });
+            } else if (code === 'WRAINB' || name.includes('黑色暴雨')) {
+              parsedWarnings.push({ label: '黑雨警告', icon: 'fa-cloud-bolt', badgeClass: 'bg-zinc-950 text-white border border-white/30' });
+            } else if (code === 'TC1' || name.includes('一號')) {
+              parsedWarnings.push({ label: '1號風球', icon: 'fa-hurricane', badgeClass: 'bg-sky-400 text-slate-950' });
+            } else if (code === 'TC3' || name.includes('三號')) {
+              parsedWarnings.push({ label: '3號風球', icon: 'fa-hurricane', badgeClass: 'bg-amber-400 text-slate-950' });
+            } else if (code.startsWith('TC8') || name.includes('八號')) {
+              parsedWarnings.push({ label: '8號風球', icon: 'fa-hurricane', badgeClass: 'bg-rose-600 text-white animate-pulse' });
+            } else if (code === 'TC9' || name.includes('九號')) {
+              parsedWarnings.push({ label: '9號風球', icon: 'fa-hurricane', badgeClass: 'bg-purple-600 text-white animate-pulse' });
+            } else if (code === 'TC10' || name.includes('十號')) {
+              parsedWarnings.push({ label: '10號風球', icon: 'fa-hurricane', badgeClass: 'bg-zinc-950 text-rose-400 border border-rose-400 animate-pulse' });
+            } else if (code === 'WHOT' || name.includes('酷熱')) {
+              parsedWarnings.push({ label: '酷熱警告', icon: 'fa-temperature-high', badgeClass: 'bg-orange-500 text-white' });
+            } else if (code === 'WCOLD' || name.includes('寒冷')) {
+              parsedWarnings.push({ label: '寒冷警告', icon: 'fa-temperature-low', badgeClass: 'bg-cyan-400 text-slate-950' });
+            } else if (code === 'WFROST' || name.includes('霜凍')) {
+              parsedWarnings.push({ label: '霜凍 / 落雪', icon: 'fa-snowflake', badgeClass: 'bg-sky-200 text-slate-950' });
+            }
+          });
+        }
+        liveData.weather.warnings = parsedWarnings;
       } catch (e) {}
 
       try {
@@ -3362,7 +3984,6 @@
       renderBoard();
     }
 
-    /* Live RTHK Local News RSS Fetcher (Auto-refreshes every 10 mins without marquee flicker) */
     async function fetchRthkNewsLive(manual = false) {
       const rssUrl = 'https://rthk.hk/rthk/news/rss/c_expressnews_clocal.xml';
       let titles = [];
@@ -3443,7 +4064,6 @@
       return `剩餘 ${r}m`;
     }
 
-    /* Local Clock Progress Engine: Smoothly advances flight progress 0% -> 100% between depTs & arrTs without spending extra API quota */
     function recalcFlightProgressFromClock(shouldRender = false) {
       if (!state.flights || !state.flights.length) return;
       const fl = state.flights[0];
@@ -3490,7 +4110,6 @@
 
       let matched = false;
 
-      // 1. Primary Global Real-Time Query via AirLabs API (https://airlabs.co/api/v9/flight)
       if (apiKey) {
         try {
           const url = `https://airlabs.co/api/v9/flight?flight_iata=${encodeURIComponent(targetCode)}&api_key=${encodeURIComponent(apiKey)}`;
@@ -3586,11 +4205,12 @@
     async function fetchFinanceLive(manual = false) {
       const symbols = Object.keys(ALL_FINANCE_TICKERS);
       let updatedCount = 0;
+      const finnhubKey = state.finnhubApiKey || DEFAULT_FINNHUB_API_KEY;
 
-      if (state.finnhubApiKey) {
+      if (finnhubKey) {
         for (const sym of symbols) {
           try {
-            const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${encodeURIComponent(state.finnhubApiKey)}`);
+            const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${encodeURIComponent(finnhubKey)}`);
             const q = await res.json();
             if (q && typeof q.c === 'number' && q.c > 0) {
               ALL_FINANCE_TICKERS[sym].price = '$' + q.c.toFixed(2);
@@ -3645,6 +4265,7 @@
       refreshTransitLive(false);
       syncGoogleSheetTodos(false);
       syncFamilyMessageSheet(false);
+      syncAnniversarySheet(false);
     }
 
     /* Boot Initialization */
@@ -3674,6 +4295,17 @@
         fetchFinanceLive(false);
       }, 600000);
 
+      // Force full background data refresh every 1 hour (3,600,000 ms)
+      setInterval(() => {
+        fetchWeatherAndNews();
+        fetchRthkNewsLive(false);
+        fetchFinanceLive(false);
+        refreshTransitLive(false);
+        syncGoogleSheetTodos(false);
+        syncFamilyMessageSheet(false);
+        syncAnniversarySheet(false);
+      }, 3600000);
+
       fetchWeatherAndNews();
       fetchRthkNewsLive(false);
       fetchFinanceLive(false);
@@ -3681,6 +4313,7 @@
       refreshTransitLive(false);
       syncGoogleSheetTodos(false);
       syncFamilyMessageSheet(false);
+      syncAnniversarySheet(false);
     };
   </script>
 </body>
